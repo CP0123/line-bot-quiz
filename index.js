@@ -34,7 +34,13 @@ const userState = {}; // 例如：{ 'U123456': { lastQuestionCode: 'Q1' } }
 
 // 處理單筆事件
 async function handleEvent(event) {
-  
+
+  if (event.type !== 'message' || event.message.type !== 'text') return null;
+
+  const userId = event.source.userId;
+  const userMessage = event.message.text.trim();
+  const upperMessage = userMessage.toUpperCase();
+
   if (userMessage === '遊戲紀錄') {
   console.log('🔎 使用者 ID:', userId);
 
@@ -70,12 +76,6 @@ async function handleEvent(event) {
     text: `🎮 你的遊戲紀錄：\n✅ 答對題數：${correctAnswers}\n📋 總作答：${totalAnswers}\n🏆 累積分數：${score} 分`
   });
 }
-
-  if (event.type !== 'message' || event.message.type !== 'text') return null;
-
-  const userId = event.source.userId;
-  const userMessage = event.message.text.trim();
-  const upperMessage = userMessage.toUpperCase();
 
   // 👇 使用者輸入 Q1、Q2 等代碼
   if (/^Q\d+$/.test(upperMessage)) {
