@@ -133,7 +133,7 @@ if (userState[userId]?.lastQuestionCode) {
   // ✅ 寫入 answers 表
 await supabase.from('answers').insert([
   {
-    user_id: userId,
+    line_id: userId,
     question_code: question.code,
     user_answer: userMessage.trim(),
     is_correct: isCorrect,
