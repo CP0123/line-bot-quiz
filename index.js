@@ -58,7 +58,7 @@ async function handleEvent(event) {
   const { data: answerData } = await supabase
     .from('answers')
     .select()
-    .eq('user_id', userId);
+    .eq('line_id', userId);
 
   const totalAnswers = answerData.length;
   const correctAnswers = answerData.filter(a => a.is_correct).length;
