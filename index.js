@@ -36,31 +36,45 @@ async function handleEvent(event) {
 
   const userMessage = event.message.text;
 
-  // 使用者輸入「開始答題」
-  if (userMessage === '開始答題') {
-    const { data, error } = await supabase.from('questions').select();
-    if (error || !data || data.length === 0) {
+// 輸入指定代碼開始答題
+if (event.type === 'message' && event.message.type === 'text') {
+  const userMessage = event.message.text.trim().toUpperCase(); // 例如 Q1
+
+  // 🧩 檢查是否是題目代碼格式
+  if (/^Q\d+$/.test(userMessage)) {
+    const { data, error } = await supabase
+      .from('questions')
+      .select()
+      .eq('code', userMessage); // 根據 code 欄位查題目
+
+    if (error) {
       return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: '目前沒有題目可以答，請稍後再試試！📭'
+        text: '❌ 讀取資料時發生錯誤，請稍後再試'
       });
     }
 
-    // 隨機抽一題
-    const randomQuestion = data[Math.floor(Math.random() * data.length)];
-    const options = JSON.parse(randomQuestion.options);
+    if (!data || data.length === 0) {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: `找不到代碼「${userMessage}」對應的題目 😢`
+      });
+    }
+
+    const question = data[0];
+    const options = JSON.parse(question.options);
     const optionText = options.map((opt, i) => `${i + 1}. ${opt}`).join('\n');
 
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: `📖 題目：${randomQuestion.text}\n\n選項：\n${optionText}`
+      text: `📖 題目（${userMessage}）：${question.text}\n\n選項：\n${optionText}`
     });
   }
 
-  // 預設回覆
+  // ➕ 其他預設訊息，例如開始答題或說明
   return client.replyMessage(event.replyToken, {
     type: 'text',
-    text: '請輸入「開始答題」來開始互動 🎯'
+    text: '請輸入題目代碼（例如 Q1）來開始答題 📮'
   });
 }
 
