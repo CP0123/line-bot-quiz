@@ -101,26 +101,15 @@ if (userState[userId]?.lastQuestionCode) {
   const isCorrect = userMessage.trim() === correctAnswer;
 
   // ✅ 寫入 answers 表
-try {
-  const { error: insertError } = await supabase.from('answers').insert([
-    {
-      user_id: userId,
-      question_code: question.code,
-      user_answer: userMessage.trim(),
-      is_correct: isCorrect,
-      created_at: new Date().toISOString()
-    }
-  ]);
-
-  if (insertError) {
-    console.error('❌ 答題紀錄寫入失敗：', insertError.message);
-  } else {
-    console.log('✅ 答題紀錄成功寫入');
+await supabase.from('answers').insert([
+  {
+    user_id: userId,
+    question_code: question.code,
+    user_answer: userMessage.trim(),
+    is_correct: isCorrect,
+    created_at: new Date().toISOString()
   }
-} catch (err) {
-  console.error('🔧 發生異常錯誤：', err.message);
-}
-
+]);
 
   if (isCorrect) {
     delete userState[userId]; // 清除記憶
