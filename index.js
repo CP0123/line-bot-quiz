@@ -76,6 +76,61 @@ async function handleEvent(event) {
     });
   }
 
+  if (userMessage === '兌換獎勵') {
+  const { data: userData, error: userError } = await supabase
+    .from('users')
+    .select()
+    .eq('line_id', userId);
+
+  if (userError || !userData || userData.length === 0) {
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: '⚠️ 尚未找到你的資料，請先答題累積分數後再試！'
+    });
+  }
+
+  const currentScore = userData[0]?.score ?? 0;
+
+  if (currentScore < 20) {
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: `💸 目前分數 ${currentScore} 分，尚未達到兌換條件（需 20 分）`
+    });
+  }
+
+  // ✅ 隨機選擇寶物
+  const treasureItems = ['小金幣 ×5', '力量果實', '幸運符咒', '神秘道具', '技能卷軸', '經驗值 +100'];
+  const reward = treasureItems[Math.floor(Math.random() * treasureItems.length)];
+
+  // 🧾 扣除分數（-20）
+  const { error: updateError } = await supabase
+    .from('users')
+    .update({ score: currentScore - 20 })
+    .eq('line_id', userId);
+
+  if (updateError) {
+    console.error('❌ 扣除分數失敗:', updateError.message);
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: '⚠️ 系統錯誤，請稍後再試'
+    });
+  }
+
+  await supabase.from('rewards').insert([
+  {
+    line_id: userId,
+    item_name: reward,
+    created_at: new Date().toISOString()
+  }
+]);
+
+  return client.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `🎉 兌換成功！你獲得了：${reward} 🪄`
+  });
+}
+
+
   // 🟡 顯示題目選項（Q1、Q2 等）
   if (/^Q\d+$/.test(upperMessage)) {
   // 👀 查詢是否已答對此題
