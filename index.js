@@ -40,6 +40,36 @@ async function handleEvent(event) {
   const userMessage = event.message.text.trim();
   const upperMessage = userMessage.toUpperCase();
 
+  if (userMessage === '遊戲紀錄') {
+  const { data: userData, error } = await supabase
+    .from('users')
+    .select()
+    .eq('line_id', userId);
+
+  if (error || !userData || userData.length === 0) {
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: '⚠️ 尚未找到你的遊戲紀錄，請先答題後再試！'
+    });
+  }
+
+  const score = userData[0].score ?? 0;
+
+  const { data: answerData } = await supabase
+    .from('answers')
+    .select()
+    .eq('user_id', userId);
+
+  const totalAnswers = answerData.length;
+  const correctAnswers = answerData.filter(a => a.is_correct).length;
+
+  return client.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `🎮 你的遊戲紀錄：\n✅ 答對題數：${correctAnswers}\n📋 總作答：${totalAnswers}\n🏆 累積分數：${score} 分`
+  });
+}
+
+
   // 👇 使用者輸入 Q1、Q2 等代碼
   if (/^Q\d+$/.test(upperMessage)) {
     const { data, error } = await supabase
@@ -166,36 +196,6 @@ await supabase.from('answers').insert([
     });
   }
 }
-
-if (userMessage === '遊戲紀錄') {
-  const { data: userData, error } = await supabase
-    .from('users')
-    .select()
-    .eq('line_id', userId);
-
-  if (error || !userData || userData.length === 0) {
-    return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: '⚠️ 尚未找到你的遊戲紀錄，請先答題後再試！'
-    });
-  }
-
-  const score = userData[0].score ?? 0;
-
-  const { data: answerData } = await supabase
-    .from('answers')
-    .select()
-    .eq('user_id', userId);
-
-  const totalAnswers = answerData.length;
-  const correctAnswers = answerData.filter(a => a.is_correct).length;
-
-  return client.replyMessage(event.replyToken, {
-    type: 'text',
-    text: `🎮 你的遊戲紀錄：\n✅ 答對題數：${correctAnswers}\n📋 總作答：${totalAnswers}\n🏆 累積分數：${score} 分`
-  });
-}
-
 
   // 預設回覆
   return client.replyMessage(event.replyToken, {
