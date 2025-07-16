@@ -34,17 +34,16 @@ const userState = {}; // 例如：{ 'U123456': { lastQuestionCode: 'Q1' } }
 
 // 處理單筆事件
 async function handleEvent(event) {
-  if (event.type !== 'message' || event.message.type !== 'text') return null;
-
-  const userId = event.source.userId;
-  const userMessage = event.message.text.trim();
-  const upperMessage = userMessage.toUpperCase();
-
+  
   if (userMessage === '遊戲紀錄') {
+  console.log('🔎 使用者 ID:', userId);
+
   const { data: userData, error } = await supabase
     .from('users')
     .select()
     .eq('line_id', userId);
+
+  console.log('🎯 users 表查詢結果:', userData);
 
   if (error || !userData || userData.length === 0) {
     return client.replyMessage(event.replyToken, {
@@ -54,14 +53,17 @@ async function handleEvent(event) {
   }
 
   const score = userData[0].score ?? 0;
+  console.log('🏆 使用者分數:', score);
 
-  const { data: answerData } = await supabase
+  const { data: answerData, error: answerError } = await supabase
     .from('answers')
     .select()
     .eq('line_id', userId);
 
-  const totalAnswers = answerData.length;
-  const correctAnswers = answerData.filter(a => a.is_correct).length;
+  console.log('📋 answers 表查詢結果:', answerData);
+
+  const totalAnswers = answerData?.length ?? 0;
+  const correctAnswers = answerData?.filter(a => a.is_correct)?.length ?? 0;
 
   return client.replyMessage(event.replyToken, {
     type: 'text',
@@ -69,6 +71,11 @@ async function handleEvent(event) {
   });
 }
 
+  if (event.type !== 'message' || event.message.type !== 'text') return null;
+
+  const userId = event.source.userId;
+  const userMessage = event.message.text.trim();
+  const upperMessage = userMessage.toUpperCase();
 
   // 👇 使用者輸入 Q1、Q2 等代碼
   if (/^Q\d+$/.test(upperMessage)) {
