@@ -36,7 +36,7 @@ async function handleEvent(event) {
 
   const userMessage = event.message.text;
 
-// 輸入指定代碼開始答題
+  // 使用者輸入「開始答題」
 if (event.type === 'message' && event.message.type === 'text') {
   const userMessage = event.message.text.trim().toUpperCase(); // 例如 Q1
 
@@ -75,6 +75,13 @@ if (event.type === 'message' && event.message.type === 'text') {
   return client.replyMessage(event.replyToken, {
     type: 'text',
     text: '請輸入題目代碼（例如 Q1）來開始答題 📮'
+  });
+}
+
+  // 預設回覆
+  return client.replyMessage(event.replyToken, {
+    type: 'text',
+    text: '請輸入「開始答題」來開始互動 🎯'
   });
 }
 
