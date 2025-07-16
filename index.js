@@ -100,6 +100,17 @@ if (userState[userId]?.lastQuestionCode) {
 
   const isCorrect = userMessage.trim() === correctAnswer;
 
+  // ✅ 寫入 answers 表
+await supabase.from('answers').insert([
+  {
+    user_id: userId,
+    question_code: question.code,
+    user_answer: userMessage.trim(),
+    is_correct: isCorrect,
+    created_at: new Date().toISOString()
+  }
+]);
+
   if (isCorrect) {
     delete userState[userId]; // 清除記憶
     return client.replyMessage(event.replyToken, {
