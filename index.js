@@ -4,6 +4,51 @@ const express = require('express');
 const { Client } = require('@line/bot-sdk');
 const { createClient } = require('@supabase/supabase-js');
 
+// 👇 建議在這裡加入 buildCardBubble()
+function buildCardBubble(card) {
+  return {
+    type: 'bubble',
+    hero: {
+      type: 'image',
+      url: card.image_url,
+      size: 'full',
+      aspectRatio: '1:1',
+      aspectMode: 'cover'
+    },
+    body: {
+      type: 'box',
+      layout: 'vertical',
+      spacing: 'sm',
+      contents: [
+        {
+          type: 'text',
+          text: card.name,
+          weight: 'bold',
+          size: 'xl',
+          align: 'center',
+          color: '#7D6AFF'
+        },
+        {
+          type: 'text',
+          text: `稀有度：${card.rarity}`,
+          size: 'md',
+          align: 'center',
+          color: '#888888'
+        },
+        {
+          type: 'text',
+          text: card.description,
+          wrap: true,
+          size: 'sm',
+          align: 'center',
+          color: '#555555'
+        }
+      ]
+    }
+  };
+}
+
+
 // 初始化 Supabase
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -176,83 +221,88 @@ async function handleEvent(event) {
     .update({ score: currentScore - 20 })
     .eq('line_id', userId);
 
-  // 6. 回覆抽到的卡片（也可以改成 Flex Bubble）
+  // 最後抽卡結果回覆
+  const bubble = buildCardBubble(randomCard);
+
   return client.replyMessage(event.replyToken, {
-  type: 'flex',
-  altText: `你獲得了 ${randomCard.name}！`,
-  contents: {
-    type: 'bubble',
-    hero: {
-      type: 'image',
-      url: randomCard.image_url,
-      size: 'full',
-      aspectRatio: '1:1',
-      aspectMode: 'cover'
-    },
-    body: {
-      type: 'box',
-      layout: 'vertical',
-      spacing: 'sm',
-      contents: [
-        {
-          type: 'text',
-          text: randomCard.name,
-          weight: 'bold',
-          size: 'xl',
-          align: 'center',
-          color: '#7D6AFF'
-        },
-        {
-          type: 'text',
-          text: `稀有度：${randomCard.rarity}`,
-          size: 'md',
-          align: 'center',
-          color: '#888888'
-        },
-        {
-          type: 'text',
-          text: randomCard.description,
-          wrap: true,
-          size: 'sm',
-          align: 'center',
-          color: '#555555'
-        }
-      ]
-    }
-  }
-});
+    type: 'flex',
+    altText: `你抽中了 ${randomCard.name}！`,
+    contents: bubble
+  }); 
 }
 
-
   if (userMessage === '我的背包') {
-    const { data: rewardData, error } = await supabase
-      .from('rewards')
-      .select('item_name')
+    // 1. 取得全部卡片
+    const { data: allCards, error: cardError } = await supabase
+      .from('cards')
+      .select();
+
+    // 2. 取得使用者已獲得的卡片
+    const { data: myCards, error: userCardError } = await supabase
+      .from('user_cards')
+      .select('card_id')
       .eq('line_id', userId);
 
-    if (error) {
-      console.error('❌ 查詢背包失敗:', error.message);
-      return client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: '⚠️ 查詢背包失敗，請稍後再試！'
+    // 3. 整理使用者已擁有卡片 ID 清單
+    const owned = myCards.map(c => c.card_id);
+
+    // 4. 將所有卡片轉成 Flex Bubble（有則顯示圖、無則顯示灰框）
+    const flexItems = allCards.map(card => {
+      const gotIt = owned.includes(card.id);
+
+      return {
+        type: 'image',
+        url: gotIt ? card.thumbnail_url : 'https://olis.kmu.edu.tw/images/game/cards/locked.png',
+        size: 'sm',
+        aspectRatio: '1:1',
+        aspectMode: 'cover',
+        action: gotIt ? {
+          type: 'message',
+          label: card.name,
+          text: `查看 ${card.name}`
+        } : undefined
+      };
+    });
+
+    // 5. 將圖片以 3x3 分組為 Grid
+    const rows = [];
+    for (let i = 0; i < flexItems.length; i += 3) {
+      rows.push({
+        type: 'box',
+        layout: 'horizontal',
+        spacing: 'sm',
+        contents: flexItems.slice(i, i + 3)
       });
     }
 
-    if (!rewardData || rewardData.length === 0) {
-      return client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: '🧳 你尚未兌換任何寶物，趕快累積積分試試看吧！'
-      });
-    }
+    // 6. 組裝整個 Bubble
+    const bubble = {
+      type: 'bubble',
+      body: {
+        type: 'box',
+        layout: 'vertical',
+        contents: [
+          {
+            type: 'text',
+            text: '🎒 我的集卡背包',
+            weight: 'bold',
+            size: 'lg',
+            align: 'center',
+            margin: 'md'
+          },
+          ...rows
+        ]
+      }
+    };
 
-    // 整理背包清單
-    const backpack = rewardData.map(r => `・${r.item_name}`).join('\n');
-
+    // 7. 回覆 Flex
     return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: `🎒 你的寶物背包：\n${backpack}`
+      type: 'flex',
+      altText: '我的背包',
+      contents: bubble
     });
   }
+
 
 
 
