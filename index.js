@@ -113,6 +113,35 @@ await supabase.from('answers').insert([
 
   if (isCorrect) {
     delete userState[userId]; // 清除記憶
+    
+    // 🧠 先查是否已有該使用者資料
+    const { data: userData, error: userError } = await supabase
+    .from('users')
+    .select()
+    .eq('line_id', userId);
+
+    if (userError) {
+    console.error('讀取使用者錯誤', userError);
+    }
+    
+    if (userData.length === 0) {
+    // 🔹 尚未建立 → 新增並給初始 10 分
+    await supabase.from('users').insert([
+      {
+        line_id: userId,
+        score: 10,
+        created_at: new Date().toISOString()
+      }
+    ]);
+    } else {
+    // 🔹 已有 → 分數 +10
+    const currentScore = userData[0].score || 0;
+    await supabase
+      .from('users')
+      .update({ score: currentScore + 10 })
+      .eq('line_id', userId);
+    }
+
     return client.replyMessage(event.replyToken, {
       type: 'text',
       text: '✅ 恭喜你答對了！'
@@ -138,6 +167,27 @@ await supabase.from('answers').insert([
   }
 }
 
+if (userMessage === '遊戲紀錄') {
+  const { data: userData, error } = await supabase
+    .from('users')
+    .select()
+    .eq('line_id', userId);
+
+  const score = userData[0]?.score ?? 0;
+
+  const { data: answerData } = await supabase
+    .from('answers')
+    .select()
+    .eq('user_id', userId);
+
+  const totalAnswers = answerData.length;
+  const correctAnswers = answerData.filter(a => a.is_correct).length;
+
+  return client.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `🎮 你的遊戲紀錄：\n✅ 正確題數：${correctAnswers}\n📋 總作答：${totalAnswers}\n🏆 累積分數：${score} 分`
+  });
+}
 
   // 預設回覆
   return client.replyMessage(event.replyToken, {
