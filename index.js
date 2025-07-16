@@ -163,22 +163,22 @@ await supabase.from('answers').insert([
     console.error('讀取使用者錯誤', userError);
     }
     
-    if (userData.length === 0) {
+    if (!userData || userData.length === 0) {
     // 🔹 尚未建立 → 新增並給初始 10 分
     await supabase.from('users').insert([
-      {
-        line_id: userId,
-        score: 10,
-        created_at: new Date().toISOString()
-      }
+    {
+      line_id: userId,
+      score: 10,
+      created_at: new Date().toISOString()
+    }
     ]);
     } else {
     // 🔹 已有 → 分數 +10
-    const currentScore = userData[0].score || 0;
+    const currentScore = userData[0]?.score ?? 0;
     await supabase
-      .from('users')
-      .update({ score: currentScore + 10 })
-      .eq('line_id', userId);
+    .from('users')
+    .update({ score: currentScore + 10 })
+    .eq('line_id', userId);
     }
 
     return client.replyMessage(event.replyToken, {
