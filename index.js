@@ -173,7 +173,14 @@ if (userMessage === '遊戲紀錄') {
     .select()
     .eq('line_id', userId);
 
-  const score = userData[0]?.score ?? 0;
+  if (error || !userData || userData.length === 0) {
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: '⚠️ 尚未找到你的遊戲紀錄，請先答題後再試！'
+    });
+  }
+
+  const score = userData[0].score ?? 0;
 
   const { data: answerData } = await supabase
     .from('answers')
@@ -185,9 +192,10 @@ if (userMessage === '遊戲紀錄') {
 
   return client.replyMessage(event.replyToken, {
     type: 'text',
-    text: `🎮 你的遊戲紀錄：\n✅ 正確題數：${correctAnswers}\n📋 總作答：${totalAnswers}\n🏆 累積分數：${score} 分`
+    text: `🎮 你的遊戲紀錄：\n✅ 答對題數：${correctAnswers}\n📋 總作答：${totalAnswers}\n🏆 累積分數：${score} 分`
   });
 }
+
 
   // 預設回覆
   return client.replyMessage(event.replyToken, {
