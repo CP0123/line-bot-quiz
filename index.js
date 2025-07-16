@@ -79,35 +79,54 @@ async function handleEvent(event) {
     });
   }
 
-  // 👇 使用者回覆選項內容（例如「台北」）
-  if (userState[userId]?.lastQuestionCode) {
-    const questionCode = userState[userId].lastQuestionCode;
-    const { data, error } = await supabase
-      .from('questions')
-      .select()
-      .eq('code', questionCode);
+  // 使用者回答選項（如「台北」）
+if (userState[userId]?.lastQuestionCode) {
+  const questionCode = userState[userId].lastQuestionCode;
+  const { data, error } = await supabase
+    .from('questions')
+    .select()
+    .eq('code', questionCode);
 
-    if (error || !data || data.length === 0) {
-      return client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: `讀取題目失敗，請重新輸入代碼 📭`
-      });
-    }
+  if (error || !data || data.length === 0) {
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: `讀取題目失敗，請重新輸入代碼 📭`
+    });
+  }
 
-    const correctAnswer = data[0].correct_answer;
+  const question = data[0];
+  const correctAnswer = question.correct_answer;
+  const options = JSON.parse(question.options);
 
-    // 比對答案
-    const isCorrect = userMessage.trim() === correctAnswer;
-    const replyText = isCorrect ? '✅ 恭喜你答對了！' : `❌ 答錯囉，正確答案是：${correctAnswer}`;
+  const isCorrect = userMessage.trim() === correctAnswer;
 
-    // ✅ 清除使用者題目記憶（避免重複比對）
-    delete userState[userId];
+  if (isCorrect) {
+    delete userState[userId]; // 清除記憶
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: '✅ 恭喜你答對了！'
+    });
+  } else {
+    // 答錯 → 顯示提示 + 再次顯示題目與選項
+    const quickReplyItems = options.map((opt) => ({
+      type: 'action',
+      action: {
+        type: 'message',
+        label: opt,
+        text: opt
+      }
+    }));
 
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: replyText
+      text: `❌ 答錯囉！再答一次～\n\n📖 題目（${question.code}）：${question.text}`,
+      quickReply: {
+        items: quickReplyItems
+      }
     });
   }
+}
+
 
   // 預設回覆
   return client.replyMessage(event.replyToken, {
