@@ -42,31 +42,32 @@ async function handleEvent(event) {
   const upperMessage = userMessage.toUpperCase();
 
   if (userMessage === '遊戲紀錄') {
-  console.log('🔎 使用者 ID:', userId);
+  console.log('🔍 查詢遊戲紀錄 for LINE ID:', userId);
 
-  const { data: userData, error } = await supabase
+  // 讀取 users 表
+  const { data: userData, error: userError } = await supabase
     .from('users')
     .select()
     .eq('line_id', userId);
 
-  console.log('🎯 users 表查詢結果:', userData);
+  console.log('📦 使用者資料:', userData);
 
-  if (error || !userData || userData.length === 0) {
+  if (userError || !userData || userData.length === 0) {
     return client.replyMessage(event.replyToken, {
       type: 'text',
       text: '⚠️ 尚未找到你的遊戲紀錄，請先答題後再試！'
     });
   }
 
-  const score = userData[0].score ?? 0;
-  console.log('🏆 使用者分數:', score);
+  const score = userData?.[0]?.score ?? 0;
 
+  // 讀取 answers 表
   const { data: answerData, error: answerError } = await supabase
     .from('answers')
     .select()
     .eq('line_id', userId);
 
-  console.log('📋 answers 表查詢結果:', answerData);
+  console.log('📋 使用者答題紀錄:', answerData);
 
   const totalAnswers = answerData?.length ?? 0;
   const correctAnswers = answerData?.filter(a => a.is_correct)?.length ?? 0;
@@ -76,6 +77,7 @@ async function handleEvent(event) {
     text: `🎮 你的遊戲紀錄：\n✅ 答對題數：${correctAnswers}\n📋 總作答：${totalAnswers}\n🏆 累積分數：${score} 分`
   });
 }
+
 
   // 👇 使用者輸入 Q1、Q2 等代碼
   if (/^Q\d+$/.test(upperMessage)) {
