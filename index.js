@@ -77,6 +77,54 @@ async function handleEvent(event) {
   }
 
   if (userMessage === '兌換獎勵') {
+    return client.replyMessage(event.replyToken, {
+      type: 'flex',
+      altText: '兌換獎勵',
+      contents: {
+        type: 'bubble',
+        hero: {
+          type: 'image',
+          url: 'https://olis.kmu.edu.tw/images/game/寶箱.png',
+          size: 'full',
+          aspectRatio: '16:9',
+          aspectMode: 'cover'
+        },
+        body: {
+          type: 'box',
+          layout: 'vertical',
+          contents: [
+            {
+              type: 'text',
+              text: '📦 集卡獎勵',
+              weight: 'bold',
+              size: 'lg',
+              align: 'center'
+            }
+          ]
+        },
+        footer: {
+          type: 'box',
+          layout: 'vertical',
+          spacing: 'sm',
+          contents: [
+            {
+              type: 'button',
+              style: 'primary',
+              action: {
+                type: 'message',
+                label: '扣 20 分抽卡',
+                text: '抽卡'
+              },
+              color: '#7D6AFF'
+            }
+          ]
+        }
+      }
+    });
+  }
+
+  if (userMessage === '抽卡') {
+  // 1. 查詢使用者分數
   const { data: userData, error: userError } = await supabase
     .from('users')
     .select()
@@ -85,7 +133,7 @@ async function handleEvent(event) {
   if (userError || !userData || userData.length === 0) {
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: '⚠️ 尚未找到你的資料，請先答題累積分數後再試！'
+      text: '⚠️ 無法查詢使用者，請先答題累積積分'
     });
   }
 
@@ -94,71 +142,117 @@ async function handleEvent(event) {
   if (currentScore < 20) {
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: `💸 目前分數 ${currentScore} 分，尚未達到兌換條件（需 20 分）`
+      text: `💸 目前分數：${currentScore} 分，不足以抽卡（需 20 分）`
     });
   }
 
-  // ✅ 隨機選擇寶物
-  const treasureItems = ['小金幣 ×5', '力量果實', '幸運符咒', '神秘道具', '技能卷軸', '經驗值 +100'];
-  const reward = treasureItems[Math.floor(Math.random() * treasureItems.length)];
+  // 2. 查詢所有卡片
+  const { data: allCards, error: cardError } = await supabase
+    .from('cards')
+    .select();
 
-  // 🧾 扣除分數（-20）
-  const { error: updateError } = await supabase
+  if (cardError || !allCards || allCards.length === 0) {
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: '⚠️ 卡片資料錯誤，請稍後再試'
+    });
+  }
+
+  // 3. 隨機抽一張卡
+  const randomCard = allCards[Math.floor(Math.random() * allCards.length)];
+
+  // 4. 儲存至 user_cards 表
+  await supabase.from('user_cards').insert([
+    {
+      line_id: userId,
+      card_id: randomCard.id,
+      created_at: new Date().toISOString()
+    }
+  ]);
+
+  // 5. 扣除 20 分
+  await supabase
     .from('users')
     .update({ score: currentScore - 20 })
     .eq('line_id', userId);
 
-  if (updateError) {
-    console.error('❌ 扣除分數失敗:', updateError.message);
-    return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: '⚠️ 系統錯誤，請稍後再試'
-    });
-  }
-
-  await supabase.from('rewards').insert([
-  {
-    line_id: userId,
-    item_name: reward,
-    created_at: new Date().toISOString()
-  }
-]);
-
+  // 6. 回覆抽到的卡片（也可以改成 Flex Bubble）
   return client.replyMessage(event.replyToken, {
-    type: 'text',
-    text: `🎉 兌換成功！你獲得了：${reward} 🪄`
-  });
+  type: 'flex',
+  altText: `你獲得了 ${randomCard.name}！`,
+  contents: {
+    type: 'bubble',
+    hero: {
+      type: 'image',
+      url: randomCard.image_url,
+      size: 'full',
+      aspectRatio: '1:1',
+      aspectMode: 'cover'
+    },
+    body: {
+      type: 'box',
+      layout: 'vertical',
+      spacing: 'sm',
+      contents: [
+        {
+          type: 'text',
+          text: randomCard.name,
+          weight: 'bold',
+          size: 'xl',
+          align: 'center',
+          color: '#7D6AFF'
+        },
+        {
+          type: 'text',
+          text: `稀有度：${randomCard.rarity}`,
+          size: 'md',
+          align: 'center',
+          color: '#888888'
+        },
+        {
+          type: 'text',
+          text: randomCard.description,
+          wrap: true,
+          size: 'sm',
+          align: 'center',
+          color: '#555555'
+        }
+      ]
+    }
+  }
+});
 }
 
-if (userMessage === '我的背包') {
-  const { data: rewardData, error } = await supabase
-    .from('rewards')
-    .select('item_name')
-    .eq('line_id', userId);
 
-  if (error) {
-    console.error('❌ 查詢背包失敗:', error.message);
+  if (userMessage === '我的背包') {
+    const { data: rewardData, error } = await supabase
+      .from('rewards')
+      .select('item_name')
+      .eq('line_id', userId);
+
+    if (error) {
+      console.error('❌ 查詢背包失敗:', error.message);
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: '⚠️ 查詢背包失敗，請稍後再試！'
+      });
+    }
+
+    if (!rewardData || rewardData.length === 0) {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: '🧳 你尚未兌換任何寶物，趕快累積積分試試看吧！'
+      });
+    }
+
+    // 整理背包清單
+    const backpack = rewardData.map(r => `・${r.item_name}`).join('\n');
+
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: '⚠️ 查詢背包失敗，請稍後再試！'
+      text: `🎒 你的寶物背包：\n${backpack}`
     });
   }
-
-  if (!rewardData || rewardData.length === 0) {
-    return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: '🧳 你尚未兌換任何寶物，趕快累積積分試試看吧！'
-    });
-  }
-
-  // 整理背包清單
-  const backpack = rewardData.map(r => `・${r.item_name}`).join('\n');
-
-  return client.replyMessage(event.replyToken, {
-    type: 'text',
-    text: `🎒 你的寶物背包：\n${backpack}`
-  });
-}
 
 
 
