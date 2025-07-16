@@ -78,40 +78,62 @@ async function handleEvent(event) {
 
   // 🟡 顯示題目選項（Q1、Q2 等）
   if (/^Q\d+$/.test(upperMessage)) {
-    const { data, error } = await supabase
-      .from('questions')
-      .select()
-      .eq('code', upperMessage);
+  // 👀 查詢是否已答對此題
+  const { data: existingAnswers, error: checkError } = await supabase
+    .from('answers')
+    .select()
+    .eq('line_id', userId)
+    .eq('question_code', upperMessage)
+    .eq('is_correct', true);
 
-    if (error || !data || data.length === 0) {
-      return client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: `找不到代碼「${upperMessage}」對應的題目 😢`
-      });
-    }
+  if (checkError) {
+    console.error('❌ 檢查答題紀錄失敗:', checkError.message);
+  }
 
-    const question = data[0];
-    const options = JSON.parse(question.options);
-
-    userState[userId] = { lastQuestionCode: question.code };
-
-    const quickReplyItems = options.map((opt) => ({
-      type: 'action',
-      action: {
-        type: 'message',
-        label: opt,
-        text: opt
-      }
-    }));
-
+  if (existingAnswers && existingAnswers.length > 0) {
+    // ✅ 已完成該題
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: `📖 題目（${question.code}）：${question.text}`,
-      quickReply: {
-        items: quickReplyItems
-      }
+      text: '📌 你已經完成此題，可以挑戰其他題目唷 🎮'
     });
   }
+
+  // 🔍 正常讀取題目並顯示
+  const { data, error } = await supabase
+    .from('questions')
+    .select()
+    .eq('code', upperMessage);
+
+  if (error || !data || data.length === 0) {
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: `找不到代碼「${upperMessage}」對應的題目 😢`
+    });
+  }
+
+  const question = data[0];
+  const options = JSON.parse(question.options);
+
+  userState[userId] = { lastQuestionCode: question.code };
+
+  const quickReplyItems = options.map((opt) => ({
+    type: 'action',
+    action: {
+      type: 'message',
+      label: opt,
+      text: opt
+    }
+  }));
+
+  return client.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `📖 題目（${question.code}）：${question.text}`,
+    quickReply: {
+      items: quickReplyItems
+    }
+  });
+  }
+
 
   // 🟡 使用者選擇答案（作答區塊）
   if (userState[userId]?.lastQuestionCode) {
