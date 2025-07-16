@@ -130,6 +130,37 @@ async function handleEvent(event) {
   });
 }
 
+if (userMessage === '我的背包') {
+  const { data: rewardData, error } = await supabase
+    .from('rewards')
+    .select('item_name')
+    .eq('line_id', userId);
+
+  if (error) {
+    console.error('❌ 查詢背包失敗:', error.message);
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: '⚠️ 查詢背包失敗，請稍後再試！'
+    });
+  }
+
+  if (!rewardData || rewardData.length === 0) {
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: '🧳 你尚未兌換任何寶物，趕快累積積分試試看吧！'
+    });
+  }
+
+  // 整理背包清單
+  const backpack = rewardData.map(r => `・${r.item_name}`).join('\n');
+
+  return client.replyMessage(event.replyToken, {
+    type: 'text',
+    text: `🎒 你的寶物背包：\n${backpack}`
+  });
+}
+
+
 
   // 🟡 顯示題目選項（Q1、Q2 等）
   if (/^Q\d+$/.test(upperMessage)) {
