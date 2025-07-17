@@ -402,6 +402,7 @@ const flexItems = allCards.map(card => {
       type: 'box',
       layout: 'horizontal',
       spacing: 'sm',
+      justifyContent: 'center', // ← 加這行置中
       contents: flexItems.slice(i, i + 3)
     });
   }
