@@ -363,36 +363,36 @@ async function handleEvent(event) {
   const ownedIds = Array.isArray(myCards) ? myCards.map(c => c.card_id) : [];
 
   // 4. 生成卡片 Flex 圖片，加灰階與黑框
-  const flexItems = allCards.map(card => {
-    const gotIt = ownedIds.includes(card.id);
+ const flexItems = allCards.map(card => {
+  const gotIt = ownedIds.includes(card.id);
 
-    // 若未擁有，使用圖片濾鏡灰階處理
-    const imageUrl = gotIt
-      ? card.thumbnail_url
-      : `https://images.weserv.nl/?url=${encodeURIComponent(card.thumbnail_url)}&grayscale`;
-
-    return {
-      type: 'box',
-      layout: 'vertical',
-      paddingAll: '4px',
-      backgroundColor: '#000000',
-      cornerRadius: 'sm',
-      contents: [
+  const itemContents = gotIt
+    ? [
         {
           type: 'image',
-          url: imageUrl,
+          url: card.thumbnail_url,
           size: 'sm',
           aspectRatio: '1:1',
           aspectMode: 'cover',
-          action: gotIt ? {
+          action: {
             type: 'message',
             label: card.name,
             text: `查看 ${card.name}`
-          } : undefined
+          }
         }
       ]
-    };
-  });
+    : []; // 未獲得時不加入圖片
+
+  return {
+    type: 'box',
+    layout: 'vertical',
+    paddingAll: '4px',
+    backgroundColor: '#000000',
+    cornerRadius: 'sm',
+    height: '72px', // 控制格子高度，保持大小一致
+    contents: itemContents
+  };
+});
 
   // 5. 分成 3x3 九宮格 Rows
   const rows = [];
