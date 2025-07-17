@@ -344,7 +344,7 @@ async function handleEvent(event) {
     .eq('line_id', userId);
 
   // 3. 整理使用者已擁有卡片 ID 清單
-  const owned = myCards.map(c => c.card_id);
+  const owned = Array.isArray(myCards) ? myCards.map(c => c.card_id) : [];
 
   // ✅ 4. 判斷是否集滿
   const isComplete = await checkCollectionProgress(userId);
