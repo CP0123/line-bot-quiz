@@ -78,13 +78,6 @@ function buildUnlockBubble() {
           align: 'center',
           color: '#666666'
         },
-        {
-          type: 'image',
-          url: 'https://olis.kmu.edu.tw/images/game/full_collection.png', // 🏆 集滿卡冊圖
-          size: 'full',
-          aspectMode: 'fit',
-          margin: 'md'
-        }
       ]
     },
     footer: {
@@ -94,9 +87,9 @@ function buildUnlockBubble() {
         {
           type: 'button',
           action: {
-            type: 'message',
-            label: '開啟限量抽卡 🎁',
-            text: '限量抽卡'
+            type: 'link',
+            label: '來去追蹤圖書館IG',
+            url: 'https://line.me/R/ti/p/@ayr1866v'
           },
           style: 'primary',
           color: '#FF6B00'
