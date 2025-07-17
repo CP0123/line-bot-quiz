@@ -362,27 +362,31 @@ async function handleEvent(event) {
   // 3. 整理已擁有卡片 ID 清單
   const ownedIds = Array.isArray(myCards) ? myCards.map(c => c.card_id) : [];
 
-  // 4. 生成卡片 Flex 圖片
+  // 4. 生成卡片 Flex 圖片，加上黑框
   const flexItems = allCards.map(card => {
-    console.log(card);
     const gotIt = ownedIds.includes(card.id);
-    const fallbackLocked = 'https://img.icons8.com/ios-filled/100/lock--v1.png';
-    const imageUrl = gotIt
-      ? card.thumbnail_url || fallbackLocked
-      : fallbackLocked;
-    console.log('🧳 Bubble 回傳內容:', JSON.stringify(bubble, null, 2));
+    const imageUrl = card.thumbnail_url || 'https://dummyimage.com/240x240/cccccc/000000&text=?';
 
     return {
-      type: 'image',
-      url: imageUrl,
-      size: 'sm',
-      aspectRatio: '1:1',
-      aspectMode: 'cover',
-      action: gotIt ? {
-        type: 'message',
-        label: card.name,
-        text: `查看 ${card.name}`
-      } : undefined
+      type: 'box',
+      layout: 'vertical',
+      paddingAll: '4px',
+      backgroundColor: '#000000',
+      cornerRadius: 'sm',
+      contents: [
+        {
+          type: 'image',
+          url: imageUrl,
+          size: 'sm',
+          aspectRatio: '1:1',
+          aspectMode: 'cover',
+          action: gotIt ? {
+            type: 'message',
+            label: card.name,
+            text: `查看 ${card.name}`
+          } : undefined
+        }
+      ]
     };
   });
 
@@ -437,9 +441,6 @@ async function handleEvent(event) {
 
   return;
 }
-
-
-
 
   if (/^查看\s/.test(userMessage)) {
   const cardName = userMessage.replace(/^查看\s/, '').trim();
