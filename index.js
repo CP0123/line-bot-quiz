@@ -369,7 +369,9 @@ async function handleEvent(event) {
     const fallbackLocked = 'https://olis.kmu.edu.tw/images/game/cards/locked.png';
     const imageUrl = gotIt
       ? card.thumbnail_url || fallbackLocked
-      : card.locked_url || fallbackLocked;
+      : fallbackLocked;
+
+
 
     return {
       type: 'image',
