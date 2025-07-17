@@ -363,7 +363,7 @@ async function handleEvent(event) {
   const ownedIds = Array.isArray(myCards) ? myCards.map(c => c.card_id) : [];
 
   // 4. 生成卡片 Flex 圖片，加灰階與黑框
- const flexItems = allCards.map(card => {
+const flexItems = allCards.map(card => {
   const gotIt = ownedIds.includes(card.id);
 
   const itemContents = gotIt
@@ -371,9 +371,9 @@ async function handleEvent(event) {
         {
           type: 'image',
           url: card.thumbnail_url,
-          size: 'sm',
           aspectRatio: '1:1',
           aspectMode: 'cover',
+          size: 'full',
           action: {
             type: 'message',
             label: card.name,
@@ -381,15 +381,16 @@ async function handleEvent(event) {
           }
         }
       ]
-    : []; // 未獲得時不加入圖片
+    : []; // 未解鎖不顯示圖片
 
   return {
     type: 'box',
     layout: 'vertical',
-    paddingAll: '4px',
+    paddingAll: '1px',
     backgroundColor: '#000000',
     cornerRadius: 'sm',
-    height: '72px', // 控制格子高度，保持大小一致
+    width: '72px',
+    height: '72px',
     contents: itemContents
   };
 });
