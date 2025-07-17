@@ -366,12 +366,11 @@ async function handleEvent(event) {
   const flexItems = allCards.map(card => {
     console.log(card);
     const gotIt = ownedIds.includes(card.id);
-    const fallbackLocked = 'https://olis.kmu.edu.tw/images/game/cards/locked.png';
+    const fallbackLocked = 'https://img.icons8.com/ios-filled/100/lock--v1.png';
     const imageUrl = gotIt
       ? card.thumbnail_url || fallbackLocked
       : fallbackLocked;
-
-
+    console.log('🧳 Bubble 回傳內容:', JSON.stringify(bubble, null, 2));
 
     return {
       type: 'image',
