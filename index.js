@@ -53,7 +53,7 @@ function buildUnlockBubble() {
     type: 'bubble',
     hero: {
       type: 'image',
-      url: 'https://olis.kmu.edu.tw/images/game/unlock_effect.png', // 🔓 解鎖光芒圖
+      url: 'https://olis.kmu.edu.tw/images/game/unlock_effect.png',
       size: 'full',
       aspectRatio: '16:9',
       aspectMode: 'cover'
@@ -77,7 +77,7 @@ function buildUnlockBubble() {
           size: 'md',
           align: 'center',
           color: '#666666'
-        },
+        }
       ]
     },
     footer: {
@@ -87,9 +87,9 @@ function buildUnlockBubble() {
         {
           type: 'button',
           action: {
-            type: 'link',
+            type: 'uri',
             label: '來去追蹤圖書館IG',
-            url: 'https://line.me/R/ti/p/@ayr1866v'
+            uri: 'https://line.me/R/ti/p/@ayr1866v'
           },
           style: 'primary',
           color: '#FF6B00'
@@ -98,6 +98,7 @@ function buildUnlockBubble() {
     }
   };
 }
+
 
 async function checkCollectionProgress(userId) {
   // 查詢全部卡片 ID
@@ -247,7 +248,7 @@ async function handleEvent(event) {
       }
     });
   }
-
+  
   if (userMessage === '抽卡') {
   // 1. 查詢使用者分數
   const { data: userData, error: userError } = await supabase
@@ -266,6 +267,7 @@ async function handleEvent(event) {
 
   // 2. 查詢所有卡片
   const { data: allCards } = await supabase.from('cards').select();
+  const totalCardCount = 9; // ✅ 固定為九宮格卡冊上限
 
   // 3. 查詢使用者已擁有的卡片
   const { data: ownedCards } = await supabase
@@ -274,13 +276,10 @@ async function handleEvent(event) {
     .eq('line_id', userId);
 
   const ownedIds = ownedCards.map((c) => c.card_id);
+  const ownedCount = ownedIds.length;
 
-  // 4. 篩出尚未獲得的卡片
-  const unownedCards = allCards.filter(card => !ownedIds.includes(card.id));
-
-  const isComplete = await checkCollectionProgress(userId);
-
-  if (isComplete) {
+  // 4. 判斷是否已集滿卡冊（9 張）
+  if (ownedCount >= totalCardCount) {
     const bubble = buildUnlockBubble();
     return client.replyMessage(event.replyToken, {
       type: 'flex',
@@ -289,6 +288,17 @@ async function handleEvent(event) {
     });
   }
 
+  // 5. 判斷是否即將完成（第 8 張 → 下一張是第 9 張）
+  if (ownedCount === totalCardCount - 1) {
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: '🌟 你已經集齊第八張卡片！下一張將完成卡冊，請輸入「我的背包」查看進度 🎒'
+    });
+  }
+
+  // 6. 篩出尚未獲得的卡片
+  const unownedCards = allCards.filter(card => !ownedIds.includes(card.id));
+
   if (unownedCards.length === 0) {
     return client.replyMessage(event.replyToken, {
       type: 'text',
@@ -296,10 +306,10 @@ async function handleEvent(event) {
     });
   }
 
-  // 5. 隨機抽一張未擁有卡
+  // 7. 隨機抽一張未擁有卡
   const newCard = unownedCards[Math.floor(Math.random() * unownedCards.length)];
 
-  // 6. 寫入 user_cards 表
+  // 8. 寫入 user_cards 表
   await supabase.from('user_cards').insert([
     {
       line_id: userId,
@@ -308,13 +318,13 @@ async function handleEvent(event) {
     }
   ]);
 
-  // 7. 扣除分數
+  // 9. 扣除分數
   await supabase
     .from('users')
     .update({ score: currentScore - 10 })
     .eq('line_id', userId);
 
-  // 8. 回覆 Flex Bubble
+  // 10. 回覆 Flex Bubble
   const bubble = buildCardBubble(newCard);
 
   return client.replyMessage(event.replyToken, {
@@ -322,7 +332,8 @@ async function handleEvent(event) {
     altText: `你抽中了 ${newCard.name}！`,
     contents: bubble
   });
-  }
+}
+
 
   if (userMessage === '我的背包') {
   // 1. 取得所有卡片資料
