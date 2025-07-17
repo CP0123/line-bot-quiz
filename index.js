@@ -352,9 +352,7 @@ async function handleEvent(event) {
     // 4. 將所有卡片轉成 Flex Bubble（有則顯示圖、無則顯示灰框）
     const flexItems = allCards.map(card => {
       const gotIt = owned.includes(card.id);
-
-    const gotIt = owned.includes(card.id);
-    const imageUrl = gotIt
+      const imageUrl = gotIt
       ? card.thumbnail_url || 'https://olis.kmu.edu.tw/images/game/cards/default.png'
       : 'https://olis.kmu.edu.tw/images/game/cards/locked.png';
 
