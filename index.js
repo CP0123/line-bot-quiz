@@ -332,26 +332,39 @@ async function handleEvent(event) {
   }
 
   if (userMessage === '我的背包') {
-  // 1. 取得全部卡片
+  // 1. 取得所有卡片
   const { data: allCards, error: cardError } = await supabase
     .from('cards')
     .select();
 
-  // 2. 取得使用者已獲得的卡片
+  if (cardError || !Array.isArray(allCards)) {
+    console.error('❌ 卡片查詢失敗:', cardError?.message);
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: '🚫 查詢卡片時出錯了，請稍後再試！'
+    });
+  }
+
+  // 2. 取得使用者卡片
   const { data: myCards, error: userCardError } = await supabase
     .from('user_cards')
     .select('card_id')
     .eq('line_id', userId);
 
-  // 3. 整理使用者已擁有卡片 ID 清單
-  const owned = Array.isArray(myCards) ? myCards.map(c => c.card_id) : [];
+  if (userCardError) {
+    console.error('❌ 使用者卡片查詢失敗:', userCardError?.message);
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: '⚠️ 無法載入背包，請稍後再試！'
+    });
+  }
 
-  // ✅ 4. 判斷是否集滿
-  const isComplete = await checkCollectionProgress(userId);
+  // 3. 整理已擁有卡片 ID 清單（防 null）
+  const ownedIds = Array.isArray(myCards) ? myCards.map(c => c.card_id) : [];
 
-  // ✅ 5. 產生卡片圖像列表
+  // 4. 卡片 Flex 圖像列表
   const flexItems = allCards.map(card => {
-    const gotIt = owned.includes(card.id);
+    const gotIt = ownedIds.includes(card.id);
     const imageUrl = gotIt
       ? card.thumbnail_url || 'https://olis.kmu.edu.tw/images/game/cards/default.png'
       : 'https://olis.kmu.edu.tw/images/game/cards/locked.png';
@@ -370,7 +383,7 @@ async function handleEvent(event) {
     };
   });
 
-  // ✅ 6. 分組為 3x3 Grid
+  // 5. 分組成 3x3 九宮格 Rows
   const rows = [];
   for (let i = 0; i < flexItems.length; i += 3) {
     rows.push({
@@ -381,7 +394,7 @@ async function handleEvent(event) {
     });
   }
 
-  // ✅ 7. 組裝背包 Bubble
+  // 6. 組裝整個 Flex Bubble
   const bubble = {
     type: 'bubble',
     body: {
@@ -401,14 +414,15 @@ async function handleEvent(event) {
     }
   };
 
-  // ✅ 8. 回覆背包 Bubble
+  // 7. 回覆背包 Bubble
   await client.replyMessage(event.replyToken, {
     type: 'flex',
-    altText: '我的背包',
+    altText: '你的背包',
     contents: bubble
   });
 
-  // ✅ 9. 若已集滿 → 額外推送動畫 Bubble
+  // 8. 判斷是否集滿，若有 → 額外推送動畫
+  const isComplete = await checkCollectionProgress(userId);
   if (isComplete) {
     const unlockBubble = buildUnlockBubble();
     await client.pushMessage(userId, {
@@ -420,6 +434,7 @@ async function handleEvent(event) {
 
   return;
 }
+
 
   if (/^查看\s/.test(userMessage)) {
   const cardName = userMessage.replace(/^查看\s/, '').trim();
