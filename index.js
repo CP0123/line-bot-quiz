@@ -353,19 +353,24 @@ async function handleEvent(event) {
     const flexItems = allCards.map(card => {
       const gotIt = owned.includes(card.id);
 
-      return {
-        type: 'image',
-        url: gotIt ? card.thumbnail_url : 'https://olis.kmu.edu.tw/images/game/cards/locked.png',
-        size: 'sm',
-        aspectRatio: '1:1',
-        aspectMode: 'cover',
-        action: gotIt ? {
-          type: 'message',
-          label: card.name,
-          text: `查看 ${card.name}`
-        } : undefined
-      };
-    });
+    const gotIt = owned.includes(card.id);
+    const imageUrl = gotIt
+      ? card.thumbnail_url || 'https://olis.kmu.edu.tw/images/game/cards/default.png'
+      : 'https://olis.kmu.edu.tw/images/game/cards/locked.png';
+
+    return {
+      type: 'image',
+      url: imageUrl,
+      size: 'sm',
+      aspectRatio: '1:1',
+      aspectMode: 'cover',
+      action: gotIt ? {
+        type: 'message',
+        label: card.name,
+        text: `查看 ${card.name}`
+      } : undefined
+    };
+
 
     // 5. 將圖片以 3x3 分組為 Grid
     const rows = [];
