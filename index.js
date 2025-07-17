@@ -362,10 +362,14 @@ async function handleEvent(event) {
   // 3. 整理已擁有卡片 ID 清單
   const ownedIds = Array.isArray(myCards) ? myCards.map(c => c.card_id) : [];
 
-  // 4. 生成卡片 Flex 圖片，加上黑框
+  // 4. 生成卡片 Flex 圖片，加灰階與黑框
   const flexItems = allCards.map(card => {
     const gotIt = ownedIds.includes(card.id);
-    const imageUrl = card.thumbnail_url || 'https://dummyimage.com/240x240/cccccc/000000&text=?';
+
+    // 若未擁有，使用圖片濾鏡灰階處理
+    const imageUrl = gotIt
+      ? card.thumbnail_url
+      : `https://images.weserv.nl/?url=${encodeURIComponent(card.thumbnail_url)}&grayscale`;
 
     return {
       type: 'box',
@@ -441,6 +445,7 @@ async function handleEvent(event) {
 
   return;
 }
+
 
   if (/^查看\s/.test(userMessage)) {
   const cardName = userMessage.replace(/^查看\s/, '').trim();
