@@ -244,7 +244,7 @@ async function handleEvent(event) {
               style: 'primary',
               action: {
                 type: 'message',
-                label: '扣 20 分抽卡',
+                label: '扣 10 分抽卡',
                 text: '抽卡'
               },
               color: '#7D6AFF'
@@ -264,10 +264,10 @@ async function handleEvent(event) {
 
   const currentScore = userData?.[0]?.score ?? 0;
 
-  if (currentScore < 20) {
+  if (currentScore < 10) {
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: `💸 目前分數：${currentScore} 分，不足以抽卡（需 20 分）`
+      text: `💸 目前分數：${currentScore} 分，不足以抽卡（需 10 分）`
     });
   }
 
@@ -318,7 +318,7 @@ async function handleEvent(event) {
   // 7. 扣除分數
   await supabase
     .from('users')
-    .update({ score: currentScore - 20 })
+    .update({ score: currentScore - 10 })
     .eq('line_id', userId);
 
   // 8. 回覆 Flex Bubble
