@@ -332,7 +332,7 @@ async function handleEvent(event) {
   }
 
   if (userMessage === '我的背包') {
-  // 1. 取得所有卡片
+  // 1. 取得所有卡片資料
   const { data: allCards, error: cardError } = await supabase
     .from('cards')
     .select();
@@ -345,7 +345,7 @@ async function handleEvent(event) {
     });
   }
 
-  // 2. 取得使用者卡片
+  // 2. 取得使用者已擁有卡片
   const { data: myCards, error: userCardError } = await supabase
     .from('user_cards')
     .select('card_id')
@@ -359,15 +359,16 @@ async function handleEvent(event) {
     });
   }
 
-  // 3. 整理已擁有卡片 ID 清單（防 null）
+  // 3. 整理已擁有卡片 ID 清單
   const ownedIds = Array.isArray(myCards) ? myCards.map(c => c.card_id) : [];
 
-  // 4. 卡片 Flex 圖像列表
+  // 4. 生成卡片 Flex 圖片
   const flexItems = allCards.map(card => {
     const gotIt = ownedIds.includes(card.id);
+    const fallbackLocked = 'https://olis.kmu.edu.tw/images/game/cards/locked.png';
     const imageUrl = gotIt
-      ? card.thumbnail_url || 'https://olis.kmu.edu.tw/images/game/cards/default.png'
-      : 'https://olis.kmu.edu.tw/images/game/cards/locked.png';
+      ? card.thumbnail_url || fallbackLocked
+      : card.locked_url || fallbackLocked;
 
     return {
       type: 'image',
@@ -383,7 +384,7 @@ async function handleEvent(event) {
     };
   });
 
-  // 5. 分組成 3x3 九宮格 Rows
+  // 5. 分成 3x3 九宮格 Rows
   const rows = [];
   for (let i = 0; i < flexItems.length; i += 3) {
     rows.push({
@@ -394,7 +395,7 @@ async function handleEvent(event) {
     });
   }
 
-  // 6. 組裝整個 Flex Bubble
+  // 6. 組裝 Flex Bubble
   const bubble = {
     type: 'bubble',
     body: {
@@ -421,7 +422,7 @@ async function handleEvent(event) {
     contents: bubble
   });
 
-  // 8. 判斷是否集滿，若有 → 額外推送動畫
+  // 8. 判斷是否已集滿
   const isComplete = await checkCollectionProgress(userId);
   if (isComplete) {
     const unlockBubble = buildUnlockBubble();
@@ -434,6 +435,8 @@ async function handleEvent(event) {
 
   return;
 }
+
+
 
 
   if (/^查看\s/.test(userMessage)) {
