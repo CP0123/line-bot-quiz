@@ -364,6 +364,7 @@ async function handleEvent(event) {
 
   // 4. 生成卡片 Flex 圖片
   const flexItems = allCards.map(card => {
+    console.log(card);
     const gotIt = ownedIds.includes(card.id);
     const fallbackLocked = 'https://olis.kmu.edu.tw/images/game/cards/locked.png';
     const imageUrl = gotIt
