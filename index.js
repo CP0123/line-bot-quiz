@@ -169,7 +169,7 @@ async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') return null;
 
   const userId = event.source.userId;
-  const userMessage = event.message.text.trim();
+  const userMessage = event.message.text.trim().toUpperCase();;
   const upperMessage = userMessage.toUpperCase();
 
   // 🟡 查詢遊戲紀錄區塊（放最前面）
