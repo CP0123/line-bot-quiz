@@ -388,7 +388,20 @@ const flexItems = allCards.map(card => {
           }
         }
       ]
-    : []; // 未解鎖不顯示圖片
+    : [
+        {
+          type: 'image',
+          url: 'https://olis.kmu.edu.tw/images/game/%E8%AE%80%E8%80%85%E4%B9%8B%E7%9F%B3.png',
+          aspectRatio: '1:1',
+          aspectMode: 'cover',
+          size: 'full',
+          action: {
+            type: 'message',
+            label: '?',
+            text: '?'
+          }
+        }
+      ]; // 未解鎖不顯示圖片
 
   return {
     type: 'box',
