@@ -148,7 +148,7 @@ const app = express();
 app.use(express.json());
 
 // 處理 webhook 事件
-app.post('/webhook', express.json(), (req, res) => {
+app.post('/webhook', async (req, res) => {
   const events = req.body.events;
   const results = await Promise.all(events.map(handleEvent));
   res.status(200).json(results);
