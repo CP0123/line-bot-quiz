@@ -167,6 +167,17 @@ async function handleEvent(event) {
   const userId = event.source.userId;
   const userMessage = event.message.text.trim().toUpperCase();;
   const upperMessage = userMessage.toUpperCase();
+  
+  //輸入關鍵字清除答題狀態
+  if (userMessage === '抽卡' || userMessage === '我的背包' || userMessage === '您尚未獲得此卡片' || userMessage === '兌換獎勵' || userMessage === '遊戲紀錄') {
+    delete userState[userId];
+  }
+
+  //卡片未獲得不回傳訊息
+  if (userMessage === '您尚未獲得此卡片') {
+    // 預設回覆
+    return ;
+  }
 
   // 🟡 查詢遊戲紀錄區塊（放最前面）
   
@@ -251,17 +262,6 @@ async function handleEvent(event) {
         }
       }
     });
-  }
-  
-  //輸入關鍵字清除答題狀態
-  if (userMessage === '抽卡' || userMessage === '我的背包' || userMessage === '您尚未獲得此卡片') {
-    delete userState[userId];
-  }
-
-  //卡片未獲得不回傳訊息
-  if (userMessage === '您尚未獲得此卡片') {
-    // 預設回覆
-    return ;
   }
 
 
