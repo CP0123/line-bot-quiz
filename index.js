@@ -169,38 +169,6 @@ async function handleEvent(event) {
 
   // 🟡 查詢遊戲紀錄區塊（放最前面）
 
-  if (userMessage === '重新開始') {
-  console.log('🔄 使用者要求重新開始，清除紀錄:', userId);
-
-  // 1. 清除暫存狀態
-  delete userState[userId];
-
-  // 2. 刪除 Supabase 中的答題紀錄、卡片紀錄與分數
-  const deleteAnswers = supabase
-    .from('answers')
-    .delete()
-    .eq('line_id', userId);
-
-  const deleteUserCards = supabase
-    .from('user_cards')
-    .delete()
-    .eq('line_id', userId);
-
-  const resetUserScore = supabase
-    .from('users')
-    .update({ score: 0 })
-    .eq('line_id', userId);
-
-  // 執行所有操作
-  await Promise.all([deleteAnswers, deleteUserCards, resetUserScore]);
-
-  return client.replyMessage(event.replyToken, {
-    type: 'text',
-    text: '✅ 已重新開始，所有紀錄已清除！歡迎再次挑戰 🎮'
-  });
-  }
-
-  
   if (userMessage === '遊戲紀錄') {
     console.log('🔍 查詢遊戲紀錄 for LINE ID:', userId);
 
