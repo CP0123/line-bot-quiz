@@ -149,6 +149,7 @@ app.use(express.json());
 
 // 處理 webhook 事件
 app.post('/webhook', async (req, res) => {
+  console.log(req.body);
   const events = req.body.events;
   const results = await Promise.all(events.map(handleEvent));
   res.status(200).json(results);
@@ -170,14 +171,14 @@ async function handleEvent(event) {
   // 🟡 查詢遊戲紀錄區塊（放最前面）
   
   if (userMessage === '遊戲紀錄') {
-    console.log('🔍 查詢遊戲紀錄 for LINE ID:', userId);
+    //console.log('🔍 查詢遊戲紀錄 for LINE ID:', userId);
 
     const { data: userData, error: userError } = await supabase
       .from('users')
       .select()
       .eq('line_id', userId);
 
-    console.log('📦 使用者資料:', userData);
+    //console.log('📦 使用者資料:', userData);
 
     if (userError || !userData || userData.length === 0) {
       return client.replyMessage(event.replyToken, {
@@ -193,7 +194,7 @@ async function handleEvent(event) {
       .select()
       .eq('line_id', userId);
 
-    console.log('📋 使用者答題紀錄:', answerData);
+    //console.log('📋 使用者答題紀錄:', answerData);
 
     const totalAnswers = answerData?.length ?? 0;
     const correctAnswers = answerData?.filter(a => a.is_correct)?.length ?? 0;
