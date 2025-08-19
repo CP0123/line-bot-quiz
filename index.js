@@ -398,7 +398,7 @@ const flexItems = allCards.map(card => {
           action: {
             type: 'message',
             label: '?',
-            text: '?'
+            text: '您尚未獲得此卡片'
           }
         }
       ]; // 未解鎖不顯示圖片
