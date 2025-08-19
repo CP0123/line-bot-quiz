@@ -656,6 +656,12 @@ const flexItems = allCards.map(card => {
     }
   }
 
+  
+  if (userMessage === '您尚未獲得此卡片') {
+    // 預設回覆
+    return ;
+  }
+
   // 預設回覆
   return client.replyMessage(event.replyToken, {
     type: 'text',
