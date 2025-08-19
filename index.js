@@ -160,6 +160,7 @@ const userState = {}; // 例如：{ 'U123456': { lastQuestionCode: 'Q1' } }
 
 // 處理單筆事件
 async function handleEvent(event) {
+
   if (event.type !== 'message' || event.message.type !== 'text') return null;
 
   const userId = event.source.userId;
@@ -167,7 +168,7 @@ async function handleEvent(event) {
   const upperMessage = userMessage.toUpperCase();
 
   // 🟡 查詢遊戲紀錄區塊（放最前面）
-  
+
   if (userMessage === '重新開始') {
   console.log('🔄 使用者要求重新開始，清除紀錄:', userId);
 
@@ -198,6 +199,7 @@ async function handleEvent(event) {
     text: '✅ 已重新開始，所有紀錄已清除！歡迎再次挑戰 🎮'
   });
   }
+
   
   if (userMessage === '遊戲紀錄') {
     console.log('🔍 查詢遊戲紀錄 for LINE ID:', userId);
