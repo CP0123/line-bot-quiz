@@ -199,6 +199,7 @@ async function handleEvent(event) {
     const totalAnswers = answerData?.length ?? 0;
     const correctAnswers = answerData?.filter(a => a.is_correct)?.length ?? 0;
 
+    delete userState[userId];
     return client.replyMessage(event.replyToken, {
       type: 'text',
       text: `🎮 你的遊戲紀錄：\n✅ 答對題數：${correctAnswers}\n📋 總作答：${totalAnswers}\n🏆 累積分數：${score} 分`
@@ -252,21 +253,33 @@ async function handleEvent(event) {
     });
   }
   
-  if (userMessage === '抽卡') {
-  // 1. 查詢使用者分數
-  const { data: userData, error: userError } = await supabase
-    .from('users')
-    .select()
-    .eq('line_id', userId);
-
-  const currentScore = userData?.[0]?.score ?? 0;
-
-  if (currentScore < 10) {
-    return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: `💸 目前分數：${currentScore} 分，不足以抽卡（需 10 分）`
-    });
+  //輸入關鍵字清除答題狀態
+  if (userMessage === '抽卡' || userMessage === '我的背包' || userMessage === '您尚未獲得此卡片') {
+    delete userState[userId];
   }
+
+  //卡片未獲得不回傳訊息
+  if (userMessage === '您尚未獲得此卡片') {
+    // 預設回覆
+    return ;
+  }
+
+
+  if (userMessage === '抽卡') {
+    // 1. 查詢使用者分數
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select()
+      .eq('line_id', userId);
+
+    const currentScore = userData?.[0]?.score ?? 0;
+
+    if (currentScore < 10) {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: `💸 目前分數：${currentScore} 分，不足以抽卡（需 10 分）`
+      });
+    }
 
   // 2. 查詢所有卡片
   const { data: allCards } = await supabase.from('cards').select();
@@ -654,12 +667,6 @@ const flexItems = allCards.map(card => {
         }
       });
     }
-  }
-
-  
-  if (userMessage === '您尚未獲得此卡片') {
-    // 預設回覆
-    return ;
   }
 
   // 預設回覆
