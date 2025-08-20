@@ -670,12 +670,10 @@ const flexItems = allCards.map(card => {
   }
 
   
-  if (event.type === 'message' && event.message.type === 'sticker') {
-    return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: '請輸入題目代碼（例如 Q1）來開始答題 📮'
-    });
-  }
+  return client.replyMessage(event.replyToken, {
+    type: 'text',
+    text: '請輸入題目代碼（例如 Q1）來開始答題 📮'
+  });
 
 
 // 根路徑回應
