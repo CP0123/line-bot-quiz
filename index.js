@@ -668,15 +668,6 @@ const flexItems = allCards.map(card => {
       });
     }
   }
-
-  if (event.type === 'message' && event.message.type === 'sticker') {
-    return client.replyMessage(event.replyToken, {
-      type: 'sticker',
-      packageId: '1',
-      stickerId: '2'
-    });
-  }
-  
   
   return client.replyMessage(event.replyToken, {
     type: 'text',
