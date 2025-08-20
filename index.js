@@ -669,12 +669,13 @@ const flexItems = allCards.map(card => {
     }
   }
 
-  // 預設回覆
-  return client.replyMessage(event.replyToken, {
-    type: 'text',
-    text: '請輸入題目代碼（例如 Q1）來開始答題 📮'
-  });
-}
+  
+  if (event.type === 'message' && event.message.type === 'sticker') {
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: '請輸入題目代碼（例如 Q1）來開始答題 📮'
+    });
+  }
 
 
 // 根路徑回應
