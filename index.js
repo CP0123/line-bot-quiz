@@ -162,7 +162,7 @@ const userState = {}; // 例如：{ 'U123456': { lastQuestionCode: 'Q1' } }
 // 處理單筆事件
 async function handleEvent(event) {
 
-  if (event.type !== 'message' || event.message.type !== 'text') return null;
+  //if (event.type !== 'message' || event.message.type !== 'text') return null;
 
   const userId = event.source.userId;
   const userMessage = event.message.text.trim().toUpperCase();;
