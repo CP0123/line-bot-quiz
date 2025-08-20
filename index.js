@@ -681,6 +681,10 @@ const flexItems = allCards.map(card => {
   });
 }
 
+app.get('/', (req, res) => {
+  res.send('LINE Bot is running!');
+});
+
 
 // 啟動伺服器
 const port = process.env.PORT || 3000;
