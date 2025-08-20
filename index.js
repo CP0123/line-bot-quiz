@@ -161,30 +161,17 @@ const userState = {}; // 例如：{ 'U123456': { lastQuestionCode: 'Q1' } }
 
 // 處理單筆事件
 async function handleEvent(event) {
-
-  
-  if (event.type !== 'message') return null;
-  
-  // 🟡 處理貼圖訊息
-  if (event.message.type === 'sticker') {
+ 
+  if (event.type !== 'message' || event.message.type !== 'text'){
     return client.replyMessage(event.replyToken, {
-      type: 'sticker',
-      packageId: '1',
-      stickerId: '2'
+      type: 'text',
+      text: '請輸入題目代碼（例如 Q1）來開始答題 📮'
     });
   }
-  
-  // 🟡 處理文字訊息
-  if (event.message.type === 'text') {
-    const userId = event.source.userId;
-    const userMessage = event.message.text.trim();
-    const upperMessage = userMessage.toUpperCase();
-  
-    // ...以下是你原本的文字訊息處理邏輯
-  }
-  
-  // 🟡 其他訊息類型不處理
-  return null;
+
+  const userId = event.source.userId;
+  const userMessage = event.message.text.trim().toUpperCase();;
+  const upperMessage = userMessage.toUpperCase();
   
   //輸入關鍵字清除答題狀態
   if (userMessage === '抽卡' || userMessage === '我的背包' || userMessage === '您尚未獲得此卡片' || userMessage === '兌換獎勵' || userMessage === '遊戲紀錄') {
