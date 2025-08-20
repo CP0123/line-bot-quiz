@@ -677,6 +677,12 @@ const flexItems = allCards.map(card => {
 }
 
 
+// 根路徑回應
+app.get('/', (req, res) => {
+  res.send('✅ LINE Bot 已部署成功！');
+});
+
+
 // 啟動伺服器
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
