@@ -33,7 +33,7 @@ async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text'){
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: '請輸入任務代碼（例：Q2133）開始答題！' + '<br>' +'或開啟遊戲選單點選您需求的功能哦～'
+      text: '請輸入任務代碼（例：Q2133）開始答題！\n或開啟遊戲選單點選您需求的功能哦～'
     });
   }
 
@@ -538,7 +538,7 @@ async function handleEvent(event) {
   //針對未設定的文字(文字類型)的預設回覆
   return client.replyMessage(event.replyToken, {
     type: 'text',
-    text: '請輸入任務代碼（例：Q2133）開始答題！' + '<br>' +'或開啟遊戲選單點選您需求的功能哦～'
+    text: '請輸入任務代碼（例：Q2133）開始答題！\n或開啟遊戲選單點選您需求的功能哦～'
   });
 }
 
@@ -627,7 +627,7 @@ function buildUnlockBubble() {
           type: 'button',
           action: {
             type: 'uri',
-            label: '填寫遊玩回饋🎉' + '<br>' + 'Feedback🎉',
+            label: '填寫遊玩回饋🎉\nFeedback🎉',
             uri: 'https://nc.kmu.edu.tw/index.php/apps/forms/s/dNaRWwcXDNTjLRfwgEz5Kama'
           },
           style: 'primary',
@@ -638,7 +638,7 @@ function buildUnlockBubble() {
           type: 'button',
           action: {
             type: 'uri',
-            label: '加入圖書館官方LINE🎉' + '<br>' + "library's official LINE account🎉",
+            label: "加入圖書館官方LINE🎉\nlibrarys official LINE account🎉",
             uri: 'https://line.me/R/ti/p/@ayr1866v'
           },
           style: 'primary',
@@ -649,7 +649,7 @@ function buildUnlockBubble() {
           type: 'button',
           action: {
             type: 'uri',
-            label: '追蹤圖書館官方IG🎉' + '<br>' + "Library's official Instagram account🎉",
+            label: "追蹤圖書館官方IG🎉\nLibrary's official Instagram account🎉",
             uri: 'https://www.instagram.com/kmulibrary/'
           },
           style: 'primary',
