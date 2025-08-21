@@ -71,13 +71,6 @@ function buildUnlockBubble() {
           color: '#f2b546',
           align: 'center'
         },
-        {
-          type: 'text',
-          text: '點擊按鈕看更多活動 Click the button to see more activities.',
-          size: 'md',
-          align: 'center',
-          color: '#666666'
-        }
       ]
     },
     footer: {
@@ -88,7 +81,7 @@ function buildUnlockBubble() {
           type: 'button',
           action: {
             type: 'uri',
-            label: '填寫遊玩回饋🎉\nFeedback🎉',
+            label: '遊玩回饋Feedback',
             uri: 'https://nc.kmu.edu.tw/index.php/apps/forms/s/dNaRWwcXDNTjLRfwgEz5Kama'
           },
           style: 'primary',
@@ -99,7 +92,7 @@ function buildUnlockBubble() {
           type: 'button',
           action: {
             type: 'uri',
-            label: "加入圖書館官方LINE🎉\nlibrarys official LINE account🎉",
+            label: "圖書館LINE(library's LINE)",
             uri: 'https://line.me/R/ti/p/@ayr1866v'
           },
           style: 'primary',
@@ -110,7 +103,7 @@ function buildUnlockBubble() {
           type: 'button',
           action: {
             type: 'uri',
-            label: "追蹤圖書館官方IG🎉\nLibrary's official Instagram account🎉",
+            label: "圖書館IG(library's Instagram)",
             uri: 'https://www.instagram.com/kmulibrary/'
           },
           style: 'primary',
