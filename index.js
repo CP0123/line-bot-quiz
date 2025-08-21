@@ -474,7 +474,7 @@ const flexItems = allCards.map(card => {
       contents: [
         {
           type: 'text',
-          text: '集卡冊 Collectible card album',
+          text: '集卡冊\nCollectible card album',
           weight: 'bold',
           size: 'lg',
           align: 'center',
