@@ -66,7 +66,7 @@ function buildUnlockBubble() {
         {
           type: 'text',
           text: '點擊看更多資訊\nClick for more information',
-          size: 'sm',
+          size: 'xs',
           weight: 'bold',
           color: '#666666',
           align: 'center'
