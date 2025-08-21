@@ -30,7 +30,7 @@ function buildCardBubble(card) {
         },
         {
           type: 'text',
-          text: `稀有度：${card.rarity}`,
+          text: `稀有度Rarity｜${card.rarity}`,
           size: 'md',
           align: 'center',
           color: '#888888'
@@ -66,7 +66,7 @@ function buildUnlockBubble() {
         {
           type: 'text',
           text: '點擊看更多資訊\nClick for more information',
-          size: 'xs',
+          size: 'sm',
           weight: 'bold',
           color: '#666666',
           align: 'center'
@@ -180,7 +180,7 @@ async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text'){
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: '請開啟遊戲選單，或輸入任務代碼（例：Q2133）開始答題！'
+      text: '請開啟遊戲選單，或輸入任務代碼（例：Q2133）開始答題！\nPlease open the game menu or enter the task code (e.g., Q2133) to begin answering questions!'
     });
   }
 
@@ -194,7 +194,7 @@ async function handleEvent(event) {
   }
 
   //卡片未獲得不回傳訊息
-  if (userMessage === '您尚未獲得此卡片') {
+  if (userMessage === '您尚未獲得此卡片\nYou have not yet obtained this card.') {
     // 預設回覆
     return ;
   }
@@ -214,7 +214,7 @@ async function handleEvent(event) {
     if (userError || !userData || userData.length === 0) {
       return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: '⚠️ 尚未找到你的遊戲紀錄，請先答題後再試！'
+        text: '⚠️ 尚未找到你的遊戲紀錄，請先答題後再試！\nYour game record has not been found yet.\nPlease answer the questions first and try again!'
       });
     }
 
@@ -232,7 +232,7 @@ async function handleEvent(event) {
     delete userState[userId];
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: `🎮 你的遊戲紀錄：\n✅ 答對題數：${correctAnswers}\n🏆 累積分數：${score} 分`
+      text: `🎮 遊戲紀錄Game Record：\n✅ 答對題數Number of Questions Completed：${correctAnswers}\n🏆 當前得分Current score：${score} `
     });
   }
 
@@ -249,7 +249,7 @@ async function handleEvent(event) {
     if (currentScore < 20) {
       return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: `💸 目前分數：${currentScore} 分，不足以抽卡（需 20 分）`
+        text: '💸 目前分數不足以抽卡（需有20分）\nYour current score is insufficient to draw cards (20 points are required).'
       });
     }else {
       return client.replyMessage(event.replyToken, {
@@ -287,7 +287,7 @@ async function handleEvent(event) {
                 style: 'primary',
                 action: {
                   type: 'message',
-                  label: '扣 20 分抽卡',
+                  label: '扣20分抽卡 Draw a card (-20 points)',
                   text: '抽卡'
                 },
                 color: '#7D6AFF'
@@ -333,7 +333,7 @@ async function handleEvent(event) {
   }else if(currentScore < 20){
     return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: `💸 目前分數：${currentScore} 分，不足以抽卡（需 20 分）`
+        text: '💸 目前分數不足以抽卡（需有20分）\nYour current score is insufficient to draw cards (20 points are required).'
       });
   }
 
@@ -436,7 +436,7 @@ const flexItems = allCards.map(card => {
           action: {
             type: 'message',
             label: '?',
-            text: '您尚未獲得此卡片'
+            text: '您尚未獲得此卡片\nYou have not yet obtained this card.'
           }
         }
       ]; // 未解鎖不顯示圖片
@@ -474,7 +474,7 @@ const flexItems = allCards.map(card => {
       contents: [
         {
           type: 'text',
-          text: '🎒 我的集卡背包',
+          text: '集卡冊 Collectible card album',
           weight: 'bold',
           size: 'lg',
           align: 'center',
@@ -519,7 +519,7 @@ const flexItems = allCards.map(card => {
   if (cardError || !cardData || cardData.length === 0) {
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: '⚠️ 找不到這張卡片 😢'
+      text: '⚠️ 找不到這張卡片 This card cannot be found. 😢'
     });
   }
 
@@ -567,7 +567,7 @@ const flexItems = allCards.map(card => {
     // ✅ 已完成該題
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: '📌 你已經完成此題，可以挑戰其他題目唷 🎮'
+      text: '📌 你已經完成此題，可以挑戰其他題目唷\nYou have completed this question. You can now try other questions. 🎮'
     });
   }
 
@@ -580,7 +580,7 @@ const flexItems = allCards.map(card => {
   if (error || !data || data.length === 0) {
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: `找不到代碼「${upperMessage}」對應的題目 😢`
+      text: '找不到對應的題目 No matching question found. 😢'
     });
   }
 
@@ -672,7 +672,7 @@ const flexItems = allCards.map(card => {
 
       return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: '✅ 恭喜你答對了！'
+        text: '✅ 恭喜你答對了！Congratulations, you got it right!'
       });
     } else {
       const quickReplyItems = options.map((opt) => ({
@@ -686,7 +686,7 @@ const flexItems = allCards.map(card => {
 
       return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: `❌ 答錯囉！再答一次～\n\n📖 題目（${question.code}）：${question.text}`,
+        text: `❌ 答錯囉！再答一次~ \nWrong answer! Try again.\n\n📖 題目（${question.code}）：${question.text}`,
         quickReply: {
           items: quickReplyItems
         }
@@ -697,7 +697,7 @@ const flexItems = allCards.map(card => {
   // 預設回覆
   return client.replyMessage(event.replyToken, {
     type: 'text',
-    text: '請開啟遊戲選單，或輸入任務代碼（例：Q2133）開始答題！'
+    text: '請開啟遊戲選單，或輸入任務代碼（例：Q2133）開始答題！\nPlease open the game menu or enter the task code (e.g., Q2133) to begin answering questions!'
   });
 }
 
