@@ -65,10 +65,10 @@ function buildUnlockBubble() {
       contents: [
         {
           type: 'text',
-          text: '🌟 恭喜！Congratulations!',
+          text: '點擊看更多資訊\nClick for more information',
           size: 'xs',
           weight: 'bold',
-          color: '#f2b546',
+          color: '#666666',
           align: 'center'
         },
       ]
