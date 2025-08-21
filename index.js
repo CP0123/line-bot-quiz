@@ -65,7 +65,7 @@ function buildUnlockBubble() {
       contents: [
         {
           type: 'text',
-          text: '點擊看更多資訊\nClick for more information',
+          text: '更多資訊 More information',
           size: 'xs',
           weight: 'bold',
           color: '#666666',
@@ -476,7 +476,7 @@ const flexItems = allCards.map(card => {
           type: 'text',
           text: '集卡冊\nCollectible card album',
           weight: 'bold',
-          size: 'lg',
+          size: 'md',
           align: 'center',
           margin: 'md'
         },
