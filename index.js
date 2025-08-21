@@ -177,7 +177,7 @@ const userState = {}; // 例如：{ 'U123456': { lastQuestionCode: 'Q1' } }
 // 處理單筆事件
 async function handleEvent(event) {
  
-  if (event.type !== 'message' || event.message.type !== 'text'){
+  if (event.type !== 'message' || event.message.type !== || 'text'event.type !== 'follow'){
     return client.replyMessage(event.replyToken, {
       type: 'text',
       text: '請開啟遊戲選單，或輸入任務代碼（例：Q2133）開始答題！\nPlease open the game menu or enter the task code (e.g., Q2133) to begin answering questions!'
