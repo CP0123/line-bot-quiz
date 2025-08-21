@@ -245,11 +245,11 @@ async function handleEvent(event) {
 
     const currentScore = userData?.[0]?.score ?? 0;
 
-    //查詢後發現小於10分, 即回傳預設文字;大於10分即呈現抽卡的Flex Message (bubble)
-    if (currentScore < 10) {
+    //查詢後發現小於20分, 即回傳預設文字;大於20分即呈現抽卡的Flex Message (bubble)
+    if (currentScore < 20) {
       return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: `💸 目前分數：${currentScore} 分，不足以抽卡（需 10 分）`
+        text: `💸 目前分數：${currentScore} 分，不足以抽卡（需 20 分）`
       });
     }else {
       return client.replyMessage(event.replyToken, {
@@ -270,9 +270,9 @@ async function handleEvent(event) {
             contents: [
               {
                 type: 'text',
-                text: '📦 集卡獎勵',
+                text: '抽隨機收藏卡Draw a random collectible card.',
                 weight: 'bold',
-                size: 'lg',
+                size: 'md',
                 align: 'center'
               }
             ]
@@ -287,7 +287,7 @@ async function handleEvent(event) {
                 style: 'primary',
                 action: {
                   type: 'message',
-                  label: '扣 10 分抽卡',
+                  label: '扣 20 分抽卡',
                   text: '抽卡'
                 },
                 color: '#7D6AFF'
