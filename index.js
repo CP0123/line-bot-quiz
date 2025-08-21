@@ -66,7 +66,7 @@ function buildUnlockBubble() {
         {
           type: 'text',
           text: '更多資訊 More information',
-          size: 'xs',
+          size: 'md',
           weight: 'bold',
           color: '#666666',
           align: 'center'
@@ -192,7 +192,7 @@ async function handleEvent(event) {
   const upperMessage = userMessage.toUpperCase();
   
   //輸入關鍵字清除答題狀態
-  if (userMessage === '抽卡' || userMessage === '我的背包' || userMessage === '您尚未獲得此卡片\nYou have not yet obtained this card.' || userMessage === '兌換獎勵' || userMessage === '遊戲紀錄') {
+  if (userMessage === '抽卡' || userMessage === '我的集卡冊' || userMessage === '您尚未獲得此卡片\nYou have not yet obtained this card.' || userMessage === '兌換獎勵' || userMessage === '遊戲紀錄') {
     delete userState[userId];
   }
 
@@ -379,7 +379,7 @@ async function handleEvent(event) {
 }
 
 
-  if (userMessage === '我的背包') {
+  if (userMessage === '我的集卡冊') {
   // 1. 取得所有卡片資料
   const { data: allCards, error: cardError } = await supabase
     .from('cards')
