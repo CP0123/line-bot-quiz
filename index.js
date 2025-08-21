@@ -189,7 +189,7 @@ async function handleEvent(event) {
   const upperMessage = userMessage.toUpperCase();
   
   //輸入關鍵字清除答題狀態
-  if (userMessage === '抽卡' || userMessage === '我的背包' || userMessage === '您尚未獲得此卡片' || userMessage === '兌換獎勵' || userMessage === '遊戲紀錄') {
+  if (userMessage === '抽卡' || userMessage === '我的背包' || userMessage === '您尚未獲得此卡片\nYou have not yet obtained this card.' || userMessage === '兌換獎勵' || userMessage === '遊戲紀錄') {
     delete userState[userId];
   }
 
@@ -270,9 +270,9 @@ async function handleEvent(event) {
             contents: [
               {
                 type: 'text',
-                text: '抽隨機收藏卡Draw a random collectible card.',
+                text: '扣20分抽卡 Draw a card (-20 points)',
                 weight: 'bold',
-                size: 'md',
+                size: 'sm',
                 align: 'center'
               }
             ]
@@ -287,7 +287,7 @@ async function handleEvent(event) {
                 style: 'primary',
                 action: {
                   type: 'message',
-                  label: '扣20分抽卡 Draw a card (-20 points)',
+                  label: '抽卡 Draw a card',
                   text: '抽卡'
                 },
                 color: '#7D6AFF'
