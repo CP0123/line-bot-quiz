@@ -149,9 +149,9 @@ async function handleEvent(event) {
     }
     }
 
+
   if (userMessage === '抽卡') {
-    //第1步
-    //查詢使用者分數
+    // 1. 查詢使用者分數
     const { data: userData, error: userError } = await supabase
       .from('users')
       .select()
@@ -159,40 +159,50 @@ async function handleEvent(event) {
 
     const currentScore = userData?.[0]?.score ?? 0;
 
-    //查詢後發現0分, 即回傳預設文字
     if (currentScore < 10) {
       return client.replyMessage(event.replyToken, {
         type: 'text',
         text: `💸 目前分數：${currentScore} 分，不足以抽卡（需 10 分）`
       });
     }
-    //第2步
-    //查詢所有卡片
+
+    // 2. 查詢所有卡片
     const { data: allCards } = await supabase.from('cards').select();
     const totalCardCount = 9; // ✅ 固定為九宮格卡冊上限
-    const unownedCards = allCards.filter(card => !ownedIds.includes(card.id)); // 篩出尚未獲得的卡片
-    const newCard = unownedCards[Math.floor(Math.random() * unownedCards.length)]; //隨機抽一張未擁有卡
 
-    //查詢使用者已擁有的卡片
+    // 3. 查詢使用者已擁有的卡片
     const { data: ownedCards } = await supabase
-    .from('user_cards')
-    .select('card_id')
-    .eq('line_id', userId);
+      .from('user_cards')
+      .select('card_id')
+      .eq('line_id', userId);
 
     const ownedIds = ownedCards.map((c) => c.card_id);
     const ownedCount = ownedIds.length;
-     
-    //判斷是否已集滿卡冊（9 張）
-    if (ownedCount >= totalCardCount || unownedCards.length === 0) {
+
+    // 4. 判斷是否已集滿卡冊（9 張）
+    if (ownedCount >= totalCardCount) {
       const bubble = buildUnlockBubble();
       return client.replyMessage(event.replyToken, {
         type: 'flex',
-        altText: '🏆 你已完成集卡冊，太強啦！',
+        altText: '✨ 集卡完成！',
         contents: bubble
       });
-    } 
+    }
 
-    //抽卡結果寫入 supabase 的 user_cards 表
+    // 6. 篩出尚未獲得的卡片
+    const unownedCards = allCards.filter(card => !ownedIds.includes(card.id));
+
+    if (unownedCards.length === 0) {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: '🏆 你已完成集卡！'
+      });
+    }
+
+    // 7. 隨機抽一張未擁有卡
+    const newCard = unownedCards[Math.floor(Math.random() * unownedCards.length)];
+
+    // 8. 寫入 user_cards 表
     await supabase.from('user_cards').insert([
       {
         line_id: userId,
@@ -201,13 +211,13 @@ async function handleEvent(event) {
       }
     ]);
 
-    //扣除分數, 並寫入supabase
+    // 9. 扣除分數
     await supabase
       .from('users')
       .update({ score: currentScore - 10 })
       .eq('line_id', userId);
 
-    //回覆 Flex Bubble
+    // 10. 回覆 Flex Bubble
     const bubble = buildCardBubble(newCard);
 
     return client.replyMessage(event.replyToken, {
@@ -215,7 +225,7 @@ async function handleEvent(event) {
       altText: `你抽中了 ${newCard.name}！`,
       contents: bubble
     });
-}
+  }
 
   if (userMessage === '我的背包') {
   // 1. 取得所有卡片資料
