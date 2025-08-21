@@ -53,7 +53,7 @@ function buildUnlockBubble() {
     type: 'bubble',
     hero: {
       type: 'image',
-      url: 'https://olis.kmu.edu.tw/images/game/unlock_effect.png',
+      url: 'https://olis.kmu.edu.tw/images/game/Achievement_unlocked.png',
       size: 'full',
       aspectRatio: '16:9',
       aspectMode: 'cover'
@@ -65,15 +65,15 @@ function buildUnlockBubble() {
       contents: [
         {
           type: 'text',
-          text: '🌟 集卡成功！',
+          text: '🌟 恭喜！Congratulations!',
           size: 'xl',
           weight: 'bold',
-          color: '#FFD700',
+          color: '#f2b546',
           align: 'center'
         },
         {
           type: 'text',
-          text: '你已成功收集全部卡片！',
+          text: '點擊按鈕看更多活動 Click the button to see more activities.',
           size: 'md',
           align: 'center',
           color: '#666666'
@@ -88,8 +88,30 @@ function buildUnlockBubble() {
           type: 'button',
           action: {
             type: 'uri',
-            label: '來去追蹤圖書館IG',
+            label: '填寫遊玩回饋🎉\nFeedback🎉',
+            uri: 'https://nc.kmu.edu.tw/index.php/apps/forms/s/dNaRWwcXDNTjLRfwgEz5Kama'
+          },
+          style: 'primary',
+          color: '#778dc7'
+        },
+        
+        {
+          type: 'button',
+          action: {
+            type: 'uri',
+            label: "加入圖書館官方LINE🎉\nlibrarys official LINE account🎉",
             uri: 'https://line.me/R/ti/p/@ayr1866v'
+          },
+          style: 'primary',
+          color: '#9bc650'
+        },
+        
+        {
+          type: 'button',
+          action: {
+            type: 'uri',
+            label: "追蹤圖書館官方IG🎉\nLibrary's official Instagram account🎉",
+            uri: 'https://www.instagram.com/kmulibrary/'
           },
           style: 'primary',
           color: '#FF6B00'
@@ -212,13 +234,12 @@ async function handleEvent(event) {
 
     //console.log('📋 使用者答題紀錄:', answerData);
 
-    const totalAnswers = answerData?.length ?? 0;
     const correctAnswers = answerData?.filter(a => a.is_correct)?.length ?? 0;
 
     delete userState[userId];
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: `🎮 你的遊戲紀錄：\n✅ 答對題數：${correctAnswers}\n📋 總作答：${totalAnswers}\n🏆 累積分數：${score} 分`
+      text: `🎮 你的遊戲紀錄：\n✅ 答對題數：${correctAnswers}\n🏆 累積分數：${score} 分`
     });
   }
 
@@ -258,7 +279,7 @@ async function handleEvent(event) {
               style: 'primary',
               action: {
                 type: 'message',
-                label: '扣 10 分抽卡',
+                label: '扣 20 分抽卡',
                 text: '抽卡'
               },
               color: '#7D6AFF'
@@ -279,10 +300,10 @@ async function handleEvent(event) {
 
     const currentScore = userData?.[0]?.score ?? 0;
 
-    if (currentScore < 10) {
+    if (currentScore < 20) {
       return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: `💸 目前分數：${currentScore} 分，不足以抽卡（需 10 分）`
+        text: `💸 目前分數：${currentScore} 分，不足以抽卡（需 20 分）`
       });
     }
 
@@ -334,7 +355,7 @@ async function handleEvent(event) {
   // 9. 扣除分數
   await supabase
     .from('users')
-    .update({ score: currentScore - 10 })
+    .update({ score: currentScore - 20 })
     .eq('line_id', userId);
 
   // 10. 回覆 Flex Bubble
@@ -401,7 +422,7 @@ const flexItems = allCards.map(card => {
     : [
         {
           type: 'image',
-          url: 'https://olis.kmu.edu.tw/images/game/%E8%AE%80%E8%80%85%E4%B9%8B%E7%9F%B3.png',
+          url: 'https://olis.kmu.edu.tw/images/game/unlocked.png',
           aspectRatio: '1:1',
           aspectMode: 'cover',
           size: 'full',
