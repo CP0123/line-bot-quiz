@@ -4,138 +4,6 @@ const express = require('express');
 const { Client } = require('@line/bot-sdk');
 const { createClient } = require('@supabase/supabase-js');
 
-// 👇 建議在這裡加入 buildCardBubble()
-function buildCardBubble(card) {
-  return {
-    type: 'bubble',
-    hero: {
-      type: 'image',
-      url: card.image_url,
-      size: 'full',
-      aspectRatio: '1:1',
-      aspectMode: 'cover'
-    },
-    body: {
-      type: 'box',
-      layout: 'vertical',
-      spacing: 'sm',
-      contents: [
-        {
-          type: 'text',
-          text: card.name,
-          weight: 'bold',
-          size: 'xl',
-          align: 'center',
-          color: '#7D6AFF'
-        },
-        {
-          type: 'text',
-          text: `稀有度：${card.rarity}`,
-          size: 'md',
-          align: 'center',
-          color: '#888888'
-        },
-        {
-          type: 'text',
-          text: card.description,
-          wrap: true,
-          size: 'sm',
-          align: 'center',
-          color: '#555555'
-        }
-      ]
-    }
-  };
-}
-
-function buildUnlockBubble() {
-  return {
-    type: 'bubble',
-    hero: {
-      type: 'image',
-      url: 'https://olis.kmu.edu.tw/images/game/unlock_effect.png',
-      size: 'full',
-      aspectRatio: '16:9',
-      aspectMode: 'cover'
-    },
-    body: {
-      type: 'box',
-      layout: 'vertical',
-      spacing: 'md',
-      contents: [
-        {
-          type: 'text',
-          text: '🌟 集卡成功！',
-          size: 'xl',
-          weight: 'bold',
-          color: '#FFD700',
-          align: 'center'
-        },
-        {
-          type: 'text',
-          text: '你已成功收集全部卡片！',
-          size: 'md',
-          align: 'center',
-          color: '#666666'
-        }
-      ]
-    },
-    footer: {
-      type: 'box',
-      layout: 'vertical',
-      contents: [
-        {
-          type: 'button',
-          action: {
-            type: 'uri',
-            label: '來去追蹤圖書館IG',
-            uri: 'https://line.me/R/ti/p/@ayr1866v'
-          },
-          style: 'primary',
-          color: '#FF6B00'
-        }
-      ]
-    }
-  };
-}
-
-
-async function checkCollectionProgress(userId) {
-  // 查詢全部卡片 ID
-  const { data: allCards, error: allError } = await supabase
-    .from('cards')
-    .select('id');
-
-  if (allError || !allCards) {
-    console.error('❌ 卡片資料查詢失敗:', allError?.message);
-    return false;
-  }
-
-  const totalCardIds = allCards.map(c => c.id);
-
-  // 查詢使用者已擁有的卡片 ID
-  const { data: userCards, error: userError } = await supabase
-    .from('user_cards')
-    .select('card_id')
-    .eq('line_id', userId);
-
-  if (userError || !userCards) {
-    console.error('❌ 使用者卡片查詢失敗:', userError?.message);
-    return false;
-  }
-
-  const ownedCardIds = userCards.map(c => c.card_id);
-
-  // 檢查是否集滿全部卡片
-  return totalCardIds.every(id => ownedCardIds.includes(id));
-}
-
-// 初始化 Supabase
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-);
-
 // 初始化 LINE Bot
 const config = {
   channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
@@ -158,14 +26,14 @@ app.post('/webhook', async (req, res) => {
 // 建立使用者答題暫存表（使用記憶方式，未來可改成資料庫）
 const userState = {}; // 例如：{ 'U123456': { lastQuestionCode: 'Q1' } }
 
-
-// 處理單筆事件
+// 主程式, 處理各項單筆事件
 async function handleEvent(event) {
  
+  //只要不是文字型態的訊息(貼圖、圖片等), 一律回覆預設文字
   if (event.type !== 'message' || event.message.type !== 'text'){
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: '請輸入題目代碼（例如 Q1）來開始答題 📮'
+      text: '請輸入任務代碼（例：Q2133）開始答題！' + '<br>' +'或開啟遊戲選單點選您需求的功能哦～'
     });
   }
 
@@ -173,7 +41,7 @@ async function handleEvent(event) {
   const userMessage = event.message.text.trim().toUpperCase();;
   const upperMessage = userMessage.toUpperCase();
   
-  //輸入關鍵字清除答題狀態
+  //輸入指定關鍵字, 清除答題狀態, 即答題到一半可以跳出答題介面
   if (userMessage === '抽卡' || userMessage === '我的背包' || userMessage === '您尚未獲得此卡片' || userMessage === '兌換獎勵' || userMessage === '遊戲紀錄') {
     delete userState[userId];
   }
@@ -184,18 +52,15 @@ async function handleEvent(event) {
     return ;
   }
 
-  // 🟡 查詢遊戲紀錄區塊（放最前面）
-  
+  //查詢遊戲紀錄
   if (userMessage === '遊戲紀錄') {
     //console.log('🔍 查詢遊戲紀錄 for LINE ID:', userId);
-
     const { data: userData, error: userError } = await supabase
       .from('users')
       .select()
       .eq('line_id', userId);
 
     //console.log('📦 使用者資料:', userData);
-
     if (userError || !userData || userData.length === 0) {
       return client.replyMessage(event.replyToken, {
         type: 'text',
@@ -211,67 +76,18 @@ async function handleEvent(event) {
       .eq('line_id', userId);
 
     //console.log('📋 使用者答題紀錄:', answerData);
-
-    const totalAnswers = answerData?.length ?? 0;
     const correctAnswers = answerData?.filter(a => a.is_correct)?.length ?? 0;
 
     delete userState[userId];
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: `🎮 你的遊戲紀錄：\n✅ 答對題數：${correctAnswers}\n📋 總作答：${totalAnswers}\n🏆 累積分數：${score} 分`
+      text: `🎮 你的遊戲紀錄：\n✅ 答對題數：${correctAnswers}\n🏆 現有分數：${score} 分`
     });
   }
 
   if (userMessage === '兌換獎勵') {
-    return client.replyMessage(event.replyToken, {
-      type: 'flex',
-      altText: '兌換獎勵',
-      contents: {
-        type: 'bubble',
-        hero: {
-          type: 'image',
-          url: 'https://olis.kmu.edu.tw/images/game/寶箱.png',
-          size: 'full',
-          aspectRatio: '16:9',
-          aspectMode: 'cover'
-        },
-        body: {
-          type: 'box',
-          layout: 'vertical',
-          contents: [
-            {
-              type: 'text',
-              text: '📦 集卡獎勵',
-              weight: 'bold',
-              size: 'lg',
-              align: 'center'
-            }
-          ]
-        },
-        footer: {
-          type: 'box',
-          layout: 'vertical',
-          spacing: 'sm',
-          contents: [
-            {
-              type: 'button',
-              style: 'primary',
-              action: {
-                type: 'message',
-                label: '扣 10 分抽卡',
-                text: '抽卡'
-              },
-              color: '#7D6AFF'
-            }
-          ]
-        }
-      }
-    });
-  }
-
-
-  if (userMessage === '抽卡') {
-    // 1. 查詢使用者分數
+    //第1步
+    //查詢使用者分數
     const { data: userData, error: userError } = await supabase
       .from('users')
       .select()
@@ -279,82 +95,127 @@ async function handleEvent(event) {
 
     const currentScore = userData?.[0]?.score ?? 0;
 
+    //查詢後發現小於10分, 即回傳預設文字;大於10分即呈現抽卡的Flex Message (bubble)
+    if (currentScore < 10) {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: `💸 目前分數：${currentScore} 分，不足以抽卡（需 10 分）`
+      });
+    }else {
+      return client.replyMessage(event.replyToken, {
+      type: 'flex',
+      altText: '兌換獎勵',
+      contents: {
+          type: 'bubble',
+          hero: {
+            type: 'image',
+            url: 'https://olis.kmu.edu.tw/images/game/寶箱.png',
+            size: 'full',
+            aspectRatio: '16:9',
+            aspectMode: 'cover'
+          },
+          body: {
+            type: 'box',
+            layout: 'vertical',
+            contents: [
+              {
+                type: 'text',
+                text: '📦 集卡獎勵',
+                weight: 'bold',
+                size: 'lg',
+                align: 'center'
+              }
+            ]
+          },
+          footer: {
+            type: 'box',
+            layout: 'vertical',
+            spacing: 'sm',
+            contents: [
+              {
+                type: 'button',
+                style: 'primary',
+                action: {
+                  type: 'message',
+                  label: '扣 10 分抽卡',
+                  text: '抽卡'
+                },
+                color: '#7D6AFF'
+              }
+            ]
+          }
+        }
+      });
+    }
+    }
+
+  if (userMessage === '抽卡') {
+    //第1步
+    //查詢使用者分數
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select()
+      .eq('line_id', userId);
+
+    const currentScore = userData?.[0]?.score ?? 0;
+
+    //查詢後發現0分, 即回傳預設文字
     if (currentScore < 10) {
       return client.replyMessage(event.replyToken, {
         type: 'text',
         text: `💸 目前分數：${currentScore} 分，不足以抽卡（需 10 分）`
       });
     }
+    //第2步
+    //查詢所有卡片
+    const { data: allCards } = await supabase.from('cards').select();
+    const totalCardCount = 9; // ✅ 固定為九宮格卡冊上限
+    const unownedCards = allCards.filter(card => !ownedIds.includes(card.id)); // 篩出尚未獲得的卡片
+    const newCard = unownedCards[Math.floor(Math.random() * unownedCards.length)]; //隨機抽一張未擁有卡
 
-  // 2. 查詢所有卡片
-  const { data: allCards } = await supabase.from('cards').select();
-  const totalCardCount = 9; // ✅ 固定為九宮格卡冊上限
-
-  // 3. 查詢使用者已擁有的卡片
-  const { data: ownedCards } = await supabase
+    //查詢使用者已擁有的卡片
+    const { data: ownedCards } = await supabase
     .from('user_cards')
     .select('card_id')
     .eq('line_id', userId);
 
-  const ownedIds = ownedCards.map((c) => c.card_id);
-  const ownedCount = ownedIds.length;
+    const ownedIds = ownedCards.map((c) => c.card_id);
+    const ownedCount = ownedIds.length;
+     
+    //判斷是否已集滿卡冊（9 張）
+    if (ownedCount >= totalCardCount || unownedCards.length === 0) {
+      const bubble = buildUnlockBubble();
+      return client.replyMessage(event.replyToken, {
+        type: 'flex',
+        altText: '🏆 你已完成集卡冊，太強啦！',
+        contents: bubble
+      });
+    } 
 
-  // 4. 判斷是否已集滿卡冊（9 張）
-  if (ownedCount >= totalCardCount) {
-    const bubble = buildUnlockBubble();
+    //抽卡結果寫入 supabase 的 user_cards 表
+    await supabase.from('user_cards').insert([
+      {
+        line_id: userId,
+        card_id: newCard.id,
+        created_at: new Date().toISOString()
+      }
+    ]);
+
+    //扣除分數, 並寫入supabase
+    await supabase
+      .from('users')
+      .update({ score: currentScore - 10 })
+      .eq('line_id', userId);
+
+    //回覆 Flex Bubble
+    const bubble = buildCardBubble(newCard);
+
     return client.replyMessage(event.replyToken, {
       type: 'flex',
-      altText: '✨ 集卡完成！',
+      altText: `你抽中了 ${newCard.name}！`,
       contents: bubble
     });
-  }
-
-  // 5. 判斷是否即將完成（第 8 張 → 下一張是第 9 張）
-  if (ownedCount === totalCardCount - 1) {
-    return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: '🌟 你已經集齊第八張卡片！下一張將完成卡冊，請輸入「我的背包」查看進度 🎒'
-    });
-  }
-
-  // 6. 篩出尚未獲得的卡片
-  const unownedCards = allCards.filter(card => !ownedIds.includes(card.id));
-
-  if (unownedCards.length === 0) {
-    return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: '🏆 你已完成集卡冊，太強啦！'
-    });
-  }
-
-  // 7. 隨機抽一張未擁有卡
-  const newCard = unownedCards[Math.floor(Math.random() * unownedCards.length)];
-
-  // 8. 寫入 user_cards 表
-  await supabase.from('user_cards').insert([
-    {
-      line_id: userId,
-      card_id: newCard.id,
-      created_at: new Date().toISOString()
-    }
-  ]);
-
-  // 9. 扣除分數
-  await supabase
-    .from('users')
-    .update({ score: currentScore - 10 })
-    .eq('line_id', userId);
-
-  // 10. 回覆 Flex Bubble
-  const bubble = buildCardBubble(newCard);
-
-  return client.replyMessage(event.replyToken, {
-    type: 'flex',
-    altText: `你抽中了 ${newCard.name}！`,
-    contents: bubble
-  });
 }
-
 
   if (userMessage === '我的背包') {
   // 1. 取得所有卡片資料
@@ -387,51 +248,51 @@ async function handleEvent(event) {
   // 3. 整理已擁有卡片 ID 清單
   const ownedIds = Array.isArray(myCards) ? myCards.map(c => c.card_id) : [];
 
-  // 4. 生成卡片 Flex 圖片，加灰階與黑框
-const flexItems = allCards.map(card => {
-  const gotIt = ownedIds.includes(card.id);
+  // 4. 生成卡片 Flex 圖片
+  const flexItems = allCards.map(card => {
+    const gotIt = ownedIds.includes(card.id);
 
-  const itemContents = gotIt
-    ? [
-        {
-          type: 'image',
-          url: card.thumbnail_url,
-          aspectRatio: '1:1',
-          aspectMode: 'cover',
-          size: 'full',
-          action: {
-            type: 'message',
-            label: card.name,
-            text: `查看 ${card.name}`
+    const itemContents = gotIt
+      ? [
+          {
+            type: 'image',
+            url: card.thumbnail_url,
+            aspectRatio: '1:1',
+            aspectMode: 'cover',
+            size: 'full',
+            action: {
+              type: 'message',
+              label: card.name,
+              text: `查看 ${card.name}`
+            }
           }
-        }
-      ]
-    : [
-        {
-          type: 'image',
-          url: 'https://olis.kmu.edu.tw/images/game/%E8%AE%80%E8%80%85%E4%B9%8B%E7%9F%B3.png',
-          aspectRatio: '1:1',
-          aspectMode: 'cover',
-          size: 'full',
-          action: {
-            type: 'message',
-            label: '?',
-            text: '您尚未獲得此卡片'
+        ]
+      : [
+          {
+            type: 'image',
+            url: 'https://olis.kmu.edu.tw/images/game/full_collection.png',
+            aspectRatio: '1:1',
+            aspectMode: 'cover',
+            size: 'full',
+            action: {
+              type: 'message',
+              label: '?',
+              text: '您尚未獲得此卡片'
+            }
           }
-        }
-      ]; // 未解鎖不顯示圖片
+        ]; // 未解鎖不顯示圖片
 
-  return {
-    type: 'box',
-    layout: 'vertical',
-    paddingAll: '1px',
-    backgroundColor: '#000000',
-    cornerRadius: 'sm',
-    width: '72px',
-    height: '72px',
-    contents: itemContents
-  };
-});
+    return {
+      type: 'box',
+      layout: 'vertical',
+      paddingAll: '1px',
+      backgroundColor: '#000000',
+      cornerRadius: 'sm',
+      width: '72px',
+      height: '72px',
+      contents: itemContents
+    };
+  });
 
   // 5. 分成 3x3 九宮格 Rows
   const rows = [];
@@ -484,111 +345,111 @@ const flexItems = allCards.map(card => {
   }
 
   return;
-}
+  }
 
-
+  //查看指定卡片, 要判斷是否獲得, 有獲得即可看大圖;若輸入未獲得/資料庫未設定的卡片, 則回傳預設訊息
   if (/^查看\s/.test(userMessage)) {
-  const cardName = userMessage.replace(/^查看\s/, '').trim();
+    const cardName = userMessage.replace(/^查看\s/, '').trim();
 
-  // 🔎 查卡片資料（從 cards 表）
-  const { data: cardData, error: cardError } = await supabase
-    .from('cards')
-    .select()
-    .eq('name', cardName);
+    // 🔎 查卡片資料（從 cards 表）
+    const { data: cardData, error: cardError } = await supabase
+      .from('cards')
+      .select()
+      .eq('name', cardName);
 
-  if (cardError || !cardData || cardData.length === 0) {
+    if (cardError || !cardData || cardData.length === 0) {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: '⚠️ 找不到這張卡片 😢'
+      });
+    }
+
+    const card = cardData[0];
+
+    // 🔐 查使用者是否擁有此卡片
+    const { data: userCards, error: userError } = await supabase
+      .from('user_cards')
+      .select()
+      .eq('line_id', userId)
+      .eq('card_id', card.id);
+
+    if (userError || !userCards || userCards.length === 0) {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: `🚫 你尚未解鎖「${card.name}」，快去抽卡吧！`
+      });
+    }
+
+    // ✅ 使用者已擁有 → 回傳大圖 Bubble
+    const bubble = buildCardBubble(card);
+
     return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: '⚠️ 找不到這張卡片 😢'
+      type: 'flex',
+      altText: `卡片：${card.name}`,
+      contents: bubble
     });
   }
 
-  const card = cardData[0];
-
-  // 🔐 查使用者是否擁有此卡片
-  const { data: userCards, error: userError } = await supabase
-    .from('user_cards')
-    .select()
-    .eq('line_id', userId)
-    .eq('card_id', card.id);
-
-  if (userError || !userCards || userCards.length === 0) {
-    return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: `🚫 你尚未解鎖「${card.name}」，快去抽卡吧！`
-    });
-  }
-
-  // ✅ 使用者已擁有 → 回傳大圖 Bubble
-  const bubble = buildCardBubble(card);
-
-  return client.replyMessage(event.replyToken, {
-    type: 'flex',
-    altText: `卡片：${card.name}`,
-    contents: bubble
-  });
-}
-
-  // 🟡 顯示題目選項（Q1、Q2 等）
+  //顯示題目選項（Q1、Q2 等）
   if (/^Q\d+$/.test(upperMessage)) {
-  // 👀 查詢是否已答對此題
-  const { data: existingAnswers, error: checkError } = await supabase
-    .from('answers')
-    .select()
-    .eq('line_id', userId)
-    .eq('question_code', upperMessage)
-    .eq('is_correct', true);
+    // 👀 查詢是否已答對此題
+    const { data: existingAnswers, error: checkError } = await supabase
+      .from('answers')
+      .select()
+      .eq('line_id', userId)
+      .eq('question_code', upperMessage)
+      .eq('is_correct', true);
 
-  if (checkError) {
-    console.error('❌ 檢查答題紀錄失敗:', checkError.message);
-  }
+    if (checkError) {
+      console.error('❌ 檢查答題紀錄失敗:', checkError.message);
+    }
 
-  if (existingAnswers && existingAnswers.length > 0) {
-    // ✅ 已完成該題
+    if (existingAnswers && existingAnswers.length > 0) {
+      // ✅ 已完成該題
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: '📌 你已經完成此題，可以挑戰其他題目唷 🎮'
+      });
+    }
+
+    // 🔍 正常讀取題目並顯示
+    const { data, error } = await supabase
+      .from('questions')
+      .select()
+      .eq('code', upperMessage);
+
+    if (error || !data || data.length === 0) {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: `找不到代碼「${upperMessage}」對應的題目 😢`
+      });
+    }
+
+    const question = data[0];
+    const options = JSON.parse(question.options);
+
+    userState[userId] = { lastQuestionCode: question.code };
+
+    const quickReplyItems = options.map((opt) => ({
+      type: 'action',
+      action: {
+        type: 'message',
+        label: opt,
+        text: opt
+      }
+    }));
+
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: '📌 你已經完成此題，可以挑戰其他題目唷 🎮'
+      text: `📖 題目（${question.code}）：${question.text}`,
+      quickReply: {
+        items: quickReplyItems
+      }
     });
   }
 
-  // 🔍 正常讀取題目並顯示
-  const { data, error } = await supabase
-    .from('questions')
-    .select()
-    .eq('code', upperMessage);
 
-  if (error || !data || data.length === 0) {
-    return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: `找不到代碼「${upperMessage}」對應的題目 😢`
-    });
-  }
-
-  const question = data[0];
-  const options = JSON.parse(question.options);
-
-  userState[userId] = { lastQuestionCode: question.code };
-
-  const quickReplyItems = options.map((opt) => ({
-    type: 'action',
-    action: {
-      type: 'message',
-      label: opt,
-      text: opt
-    }
-  }));
-
-  return client.replyMessage(event.replyToken, {
-    type: 'text',
-    text: `📖 題目（${question.code}）：${question.text}`,
-    quickReply: {
-      items: quickReplyItems
-    }
-  });
-  }
-
-
-  // 🟡 使用者選擇答案（作答區塊）
+  //使用者選擇答案（作答區塊）
   if (userState[userId]?.lastQuestionCode) {
     const questionCode = userState[userId].lastQuestionCode;
     const { data, error } = await supabase
@@ -674,12 +535,167 @@ const flexItems = allCards.map(card => {
     }
   }
 
-  // 預設回覆
+  //針對未設定的文字(文字類型)的預設回覆
   return client.replyMessage(event.replyToken, {
     type: 'text',
-    text: '請輸入題目代碼（例如 Q1）來開始答題 📮'
+    text: '請輸入任務代碼（例：Q2133）開始答題！' + '<br>' +'或開啟遊戲選單點選您需求的功能哦～'
   });
 }
+
+// 呈現每張卡片的大圖, 包含圖片、名稱、稀有度、描述
+function buildCardBubble(card) {
+  return {
+    type: 'bubble',
+    hero: {
+      type: 'image',
+      url: card.image_url,
+      size: 'full',
+      aspectRatio: '1:1',
+      aspectMode: 'cover'
+    },
+    body: {
+      type: 'box',
+      layout: 'vertical',
+      spacing: 'sm',
+      contents: [
+        {
+          type: 'text',
+          text: card.name,
+          weight: 'bold',
+          size: 'xl',
+          align: 'center',
+          color: '#7D6AFF'
+        },
+        {
+          type: 'text',
+          text: `稀有度：${card.rarity}`,
+          size: 'md',
+          align: 'center',
+          color: '#888888'
+        },
+        {
+          type: 'text',
+          text: card.description,
+          wrap: true,
+          size: 'sm',
+          align: 'center',
+          color: '#555555'
+        }
+      ]
+    }
+  };
+}
+
+//完成所有集卡後, 呈現的成就畫面, 包含連結按鈕(可設定填寫滿意度問卷/追蹤圖書館ig等)
+function buildUnlockBubble() {
+  return {
+    type: 'bubble',
+    hero: {
+      type: 'image',
+      url: 'https://olis.kmu.edu.tw/images/game/unlock_effect.png',
+      size: 'full',
+      aspectRatio: '16:9',
+      aspectMode: 'cover'
+    },
+    body: {
+      type: 'box',
+      layout: 'vertical',
+      spacing: 'md',
+      contents: [
+        {
+          type: 'text',
+          text: '🌟 恭喜！Congratulations!',
+          size: 'xl',
+          weight: 'bold',
+          color: '#f2b546',
+          align: 'center'
+        },
+        {
+          type: 'text',
+          text: '點擊按鈕看更多活動 Click the button to see more activities.',
+          size: 'md',
+          align: 'center',
+          color: '#666666'
+        }
+      ]
+    },
+    footer: {
+      type: 'box',
+      layout: 'vertical',
+      contents: [
+        {
+          type: 'button',
+          action: {
+            type: 'uri',
+            label: '填寫遊玩回饋🎉' + '<br>' + 'Feedback🎉',
+            uri: 'https://nc.kmu.edu.tw/index.php/apps/forms/s/dNaRWwcXDNTjLRfwgEz5Kama'
+          },
+          style: 'primary',
+          color: '#778dc7'
+        },
+        
+        {
+          type: 'button',
+          action: {
+            type: 'uri',
+            label: '加入圖書館官方LINE🎉' + '<br>' + "library's official LINE account🎉",
+            uri: 'https://line.me/R/ti/p/@ayr1866v'
+          },
+          style: 'primary',
+          color: '#9bc650'
+        },
+        
+        {
+          type: 'button',
+          action: {
+            type: 'uri',
+            label: '追蹤圖書館官方IG🎉' + '<br>' + "Library's official Instagram account🎉",
+            uri: 'https://www.instagram.com/kmulibrary/'
+          },
+          style: 'primary',
+          color: '#FF6B00'
+        }
+      ]
+    }
+  };
+}
+
+//查詢是否完成所有集卡, 至supabase中比對是否擁有全部的卡片編號
+async function checkCollectionProgress(userId) {
+  // 查詢全部卡片 ID
+  const { data: allCards, error: allError } = await supabase
+    .from('cards')
+    .select('id');
+
+  if (allError || !allCards) {
+    console.error('❌ 卡片資料查詢失敗:', allError?.message);
+    return false;
+  }
+
+  const totalCardIds = allCards.map(c => c.id);
+
+  // 查詢使用者已擁有的卡片 ID
+  const { data: userCards, error: userError } = await supabase
+    .from('user_cards')
+    .select('card_id')
+    .eq('line_id', userId);
+
+  if (userError || !userCards) {
+    console.error('❌ 使用者卡片查詢失敗:', userError?.message);
+    return false;
+  }
+
+  const ownedCardIds = userCards.map(c => c.card_id);
+
+  // 檢查是否集滿全部卡片
+  return totalCardIds.every(id => ownedCardIds.includes(id));
+}
+
+// 初始化 Supabase
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
 
 app.get('/', (req, res) => {
   res.send('LINE Bot is running!');
