@@ -66,7 +66,7 @@ function buildUnlockBubble() {
         {
           type: 'text',
           text: '🌟 恭喜！Congratulations!',
-          size: 'xl',
+          size: 'xs',
           weight: 'bold',
           color: '#f2b546',
           align: 'center'
@@ -237,51 +237,67 @@ async function handleEvent(event) {
   }
 
   if (userMessage === '兌換獎勵') {
-    return client.replyMessage(event.replyToken, {
+    // 1. 查詢使用者分數
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select()
+      .eq('line_id', userId);
+
+    const currentScore = userData?.[0]?.score ?? 0;
+
+    //查詢後發現小於10分, 即回傳預設文字;大於10分即呈現抽卡的Flex Message (bubble)
+    if (currentScore < 10) {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: `💸 目前分數：${currentScore} 分，不足以抽卡（需 10 分）`
+      });
+    }else {
+      return client.replyMessage(event.replyToken, {
       type: 'flex',
       altText: '兌換獎勵',
       contents: {
-        type: 'bubble',
-        hero: {
-          type: 'image',
-          url: 'https://olis.kmu.edu.tw/images/game/寶箱.png',
-          size: 'full',
-          aspectRatio: '16:9',
-          aspectMode: 'cover'
-        },
-        body: {
-          type: 'box',
-          layout: 'vertical',
-          contents: [
-            {
-              type: 'text',
-              text: '📦 集卡獎勵',
-              weight: 'bold',
-              size: 'lg',
-              align: 'center'
-            }
-          ]
-        },
-        footer: {
-          type: 'box',
-          layout: 'vertical',
-          spacing: 'sm',
-          contents: [
-            {
-              type: 'button',
-              style: 'primary',
-              action: {
-                type: 'message',
-                label: '扣 20 分抽卡',
-                text: '抽卡'
-              },
-              color: '#7D6AFF'
-            }
-          ]
+          type: 'bubble',
+          hero: {
+            type: 'image',
+            url: 'https://olis.kmu.edu.tw/images/game/寶箱.png',
+            size: 'full',
+            aspectRatio: '16:9',
+            aspectMode: 'cover'
+          },
+          body: {
+            type: 'box',
+            layout: 'vertical',
+            contents: [
+              {
+                type: 'text',
+                text: '📦 集卡獎勵',
+                weight: 'bold',
+                size: 'lg',
+                align: 'center'
+              }
+            ]
+          },
+          footer: {
+            type: 'box',
+            layout: 'vertical',
+            spacing: 'sm',
+            contents: [
+              {
+                type: 'button',
+                style: 'primary',
+                action: {
+                  type: 'message',
+                  label: '扣 10 分抽卡',
+                  text: '抽卡'
+                },
+                color: '#7D6AFF'
+              }
+            ]
+          }
         }
-      }
-    });
-  }
+      });
+    }
+    }
 
 
   if (userMessage === '抽卡') {
@@ -292,13 +308,6 @@ async function handleEvent(event) {
       .eq('line_id', userId);
 
     const currentScore = userData?.[0]?.score ?? 0;
-
-    if (currentScore < 20) {
-      return client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: `💸 目前分數：${currentScore} 分，不足以抽卡（需 20 分）`
-      });
-    }
 
   // 2. 查詢所有卡片
   const { data: allCards } = await supabase.from('cards').select();
@@ -321,6 +330,11 @@ async function handleEvent(event) {
       altText: '✨ 集卡完成！',
       contents: bubble
     });
+  }else if(currentScore < 20){
+    return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: `💸 目前分數：${currentScore} 分，不足以抽卡（需 20 分）`
+      });
   }
 
   // 6. 篩出尚未獲得的卡片
