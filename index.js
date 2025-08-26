@@ -210,7 +210,7 @@ async function handleEvent(event) {
     });
   }*/
 
-  if (userMessage === '遊戲說明') {
+  if (userMessage === '遊戲說明' || event.type === 'follow) {
     return client.replyMessage(event.replyToken, {
       type: 'flex',
       altText: '遊戲說明影片',
@@ -225,10 +225,6 @@ async function handleEvent(event) {
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover',
-              action: {
-                type: 'uri',
-                uri: 'https://olis.kmu.edu.tw/images/game/TEST.mp4' // 第一部影片連結
-              }
             },
             body: {
               type: 'box',
@@ -252,10 +248,6 @@ async function handleEvent(event) {
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover',
-              action: {
-                type: 'uri',
-                uri: 'https://olis.kmu.edu.tw/images/game/TEST.mp4' // 第二部影片連結
-              }
             },
             body: {
               type: 'box',
