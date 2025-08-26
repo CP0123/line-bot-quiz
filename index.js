@@ -178,16 +178,8 @@ const userState = {}; // 例如：{ 'U123456': { lastQuestionCode: 'Q1' } }
 async function handleEvent(event) {
 
   console.log('🔔 收到事件:', event);
-  
-  if (!(event.type === 'message' && event.message.type === 'text')) {
-    return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: '請開啟遊戲選單，或輸入任務代碼（例：Q1）開始答題！\nPlease open the game menu or enter the task code (e.g., Q1) to begin answering questions!'
-    });
-  }
 
-  // 🟡 加入好友事件（不包含 event.message）
-  if (event.type === 'follow') {
+  if(event.type === 'follow'){
     return client.replyMessage(event.replyToken, {
       type: 'flex',
       altText: '遊戲說明Game Instructions',
@@ -265,6 +257,11 @@ async function handleEvent(event) {
           }
         ]
       }
+    });
+  }else if(!(event.type === 'message' && event.message.type === 'text')){
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: '請開啟遊戲選單，或輸入任務代碼（例：Q1）開始答題！\nPlease open the game menu or enter the task code (e.g., Q1) to begin answering questions!'
     });
   }
 
