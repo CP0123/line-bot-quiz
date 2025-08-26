@@ -210,7 +210,7 @@ async function handleEvent(event) {
     });
   }*/
 
-  if (userMessage === '遊戲說明' || event.type === 'follow) {
+  if (userMessage === '遊戲說明' || event.type === 'follow') {
     return client.replyMessage(event.replyToken, {
       type: 'flex',
       altText: '遊戲說明影片',
