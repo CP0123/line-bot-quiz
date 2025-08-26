@@ -192,7 +192,7 @@ async function handleEvent(event) {
   const upperMessage = userMessage.toUpperCase();
   
   //輸入關鍵字清除答題狀態
-  if (userMessage === '抽卡' || userMessage === '集卡冊' || userMessage === '您尚未獲得此卡片\nYou have not yet obtained this card.' || userMessage === '獎勵兌換' || userMessage === '遊戲紀錄') {
+  if (userMessage === '抽卡' || userMessage === '集卡冊' || userMessage === '您尚未獲得此卡片\nYou have not yet obtained this card.' || userMessage === '獎勵兌換' || userMessage === '遊戲紀錄'|| userMessage === '遊戲說明') {
     delete userState[userId];
   }
 
@@ -200,6 +200,14 @@ async function handleEvent(event) {
   if (userMessage === '您尚未獲得此卡片\nYou have not yet obtained this card.') {
     // 預設回覆
     return ;
+  }
+
+  if (userMessage === '遊戲說明') {
+    return client.replyMessage(event.replyToken, {
+      type: 'video',
+      originalContentUrl: 'https://olis.kmu.edu.tw/images/game/TEST.mp4', // 替換為你的直式影片網址
+      previewImageUrl: 'https://olis.kmu.edu.tw/images/game/TEST.png'   // 替換為直式預覽圖
+    });
   }
 
   // 🟡 查詢遊戲紀錄區塊（放最前面）
