@@ -683,7 +683,7 @@ const flexItems = allCards.map(card => {
 
       return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: '✅ 恭喜你答對了！Congratulations, you got it right!'
+        text: '✅ 恭喜答對，獲得10分！Congratulations on answering correctly and earning 10 points!!'
       });
     } else {
       const quickReplyItems = options.map((opt) => ({
