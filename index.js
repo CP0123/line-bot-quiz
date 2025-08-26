@@ -30,7 +30,7 @@ function buildCardBubble(card) {
         },
         {
           type: 'text',
-          text: `稀有度Rarity｜${card.rarity}`,
+          text: `${card.rarity}`,
           size: 'md',
           align: 'center',
           color: '#888888'
@@ -183,7 +183,7 @@ async function handleEvent(event) {
   )) {
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: '請開啟遊戲選單，或輸入任務代碼（例：Q2133）開始答題！\nPlease open the game menu or enter the task code (e.g., Q2133) to begin answering questions!'
+      text: '請開啟遊戲選單，或輸入任務代碼（例：Q1）開始答題！\nPlease open the game menu or enter the task code (e.g., Q1) to begin answering questions!'
     });
   }
 
@@ -700,7 +700,7 @@ const flexItems = allCards.map(card => {
   // 預設回覆
   return client.replyMessage(event.replyToken, {
     type: 'text',
-    text: '請開啟遊戲選單，或輸入任務代碼（例：Q2133）開始答題！\nPlease open the game menu or enter the task code (e.g., Q2133) to begin answering questions!'
+    text: '請開啟遊戲選單，或輸入任務代碼（例：Q1）開始答題！\nPlease open the game menu or enter the task code (e.g., Q1) to begin answering questions!'
   });
 }
 
