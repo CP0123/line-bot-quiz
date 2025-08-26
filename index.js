@@ -176,16 +176,95 @@ const userState = {}; // 例如：{ 'U123456': { lastQuestionCode: 'Q1' } }
 
 // 處理單筆事件
 async function handleEvent(event) {
-  
+
   console.log('🔔 收到事件:', event);
   
-  if (!(
-    (event.type === 'message' && event.message.type === 'text') ||
-    event.type === 'follow'
-  )) {
+  if (!(event.type === 'message' && event.message.type === 'text')) {
     return client.replyMessage(event.replyToken, {
       type: 'text',
       text: '請開啟遊戲選單，或輸入任務代碼（例：Q1）開始答題！\nPlease open the game menu or enter the task code (e.g., Q1) to begin answering questions!'
+    });
+  }
+
+  // 🟡 加入好友事件（不包含 event.message）
+  if (event.type === 'follow') {
+    return client.replyMessage(event.replyToken, {
+      type: 'flex',
+      altText: '遊戲說明Game Instructions',
+      contents: {
+        type: 'carousel',
+        contents: [
+          {
+            type: 'bubble',
+            hero: {
+              type: 'image',
+              url: 'https://olis.kmu.edu.tw/images/game/TEST.png',
+              size: 'full',
+              aspectRatio: '9:16',
+              aspectMode: 'cover'
+            },
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'text',
+                  text: '🎮遊戲介面 Game Interface',
+                  weight: 'bold',
+                  size: 'md',
+                  align: 'center'
+                }
+              ]
+            }
+          },
+          {
+            type: 'bubble',
+            hero: {
+              type: 'image',
+              url: 'https://olis.kmu.edu.tw/images/game/TEST.png',
+              size: 'full',
+              aspectRatio: '9:16',
+              aspectMode: 'cover'
+            },
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'text',
+                  text: '🎮遊戲方式 How to Play',
+                  weight: 'bold',
+                  size: 'md',
+                  align: 'center'
+                }
+              ]
+            }
+          },
+          {
+            type: 'bubble',
+            hero: {
+              type: 'image',
+              url: 'https://olis.kmu.edu.tw/images/game/TEST.png',
+              size: 'full',
+              aspectRatio: '9:16',
+              aspectMode: 'cover'
+            },
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'text',
+                  text: '🎮遊戲選單功能 Game Menu Features',
+                  weight: 'bold',
+                  size: 'md',
+                  align: 'center'
+                }
+              ]
+            }
+          }
+        ]
+      }
     });
   }
 
