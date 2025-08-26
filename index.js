@@ -177,6 +177,8 @@ const userState = {}; // 例如：{ 'U123456': { lastQuestionCode: 'Q1' } }
 // 處理單筆事件
 async function handleEvent(event) {
   
+  console.log('🔔 收到事件:', event);
+  
   if (!(
     (event.type === 'message' && event.message.type === 'text') ||
     event.type === 'follow'
@@ -200,89 +202,6 @@ async function handleEvent(event) {
   if (userMessage === '您尚未獲得此卡片\nYou have not yet obtained this card.') {
     // 預設回覆
     return ;
-  }
-
-  if (event.type === 'follow') {
-    return client.replyMessage(event.replyToken, {
-      type: 'flex',
-      altText: '遊戲說明Game Instructions',
-      contents: {
-        type: 'carousel',
-        contents: [
-          /*第一頁-遊戲介面*/
-          {
-            type: 'bubble',
-            hero: {
-              type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/TEST.png',
-              size: 'full',
-              aspectRatio: '9:16',
-              aspectMode: 'cover',
-            },
-            body: {
-              type: 'box',
-              layout: 'vertical',
-              contents: [
-                {
-                  type: 'text',
-                  text: '🎮遊戲介面 Game Interface',
-                  weight: 'bold',
-                  size: 'md',
-                  align: 'center'
-                }
-              ]
-            }
-          },
-          /*第二頁-遊戲方式*/
-          {
-            type: 'bubble',
-            hero: {
-              type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/TEST.png', // 第二部影片預覽圖
-              size: 'full',
-              aspectRatio: '9:16',
-              aspectMode: 'cover',
-            },
-            body: {
-              type: 'box',
-              layout: 'vertical',
-              contents: [
-                {
-                  type: 'text',
-                  text: '🎮遊戲方式 How to Play',
-                  weight: 'bold',
-                  size: 'md',
-                  align: 'center'
-                }
-              ]
-            }
-          },
-          {
-            type: 'bubble',
-            hero: {
-              type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/TEST.png', // 第二部影片預覽圖
-              size: 'full',
-              aspectRatio: '9:16',
-              aspectMode: 'cover',
-            },
-            body: {
-              type: 'box',
-              layout: 'vertical',
-              contents: [
-                {
-                  type: 'text',
-                  text: '🎮遊戲選單功能 Game Menu Features',
-                  weight: 'bold',
-                  size: 'md',
-                  align: 'center'
-                }
-              ]
-            }
-          }
-        ]
-      }
-    });
   }
 
   if (userMessage === '遊戲說明') {
