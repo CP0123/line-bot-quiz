@@ -202,13 +202,54 @@ async function handleEvent(event) {
     return ;
   }
 
-  if (userMessage === '遊戲說明') {
+  /*if (userMessage === '遊戲說明') {
     return client.replyMessage(event.replyToken, {
       type: 'video',
       originalContentUrl: 'https://olis.kmu.edu.tw/images/game/TEST.mp4', // 替換為你的直式影片網址
       previewImageUrl: 'https://olis.kmu.edu.tw/images/game/TEST.png'   // 替換為直式預覽圖
     });
+  }*/
+
+  if (userMessage === '遊戲說明') {
+    return client.replyMessage(event.replyToken, {
+      type: 'flex',
+      altText: '遊戲說明影片',
+      contents: {
+        type: 'bubble',
+        hero: {
+          type: 'video',
+          url: 'https://olis.kmu.edu.tw/images/game/TEST.mp4', // 替換為你的影片網址
+          previewUrl: 'https://olis.kmu.edu.tw/images/game/TEST.png', // 替換為預覽圖
+          aspectRatio: '9:16',
+          action: {
+            type: 'uri',
+            uri: 'https://olis.kmu.edu.tw/images/game/TEST.mp4'
+          }
+        },
+        body: {
+          type: 'box',
+          layout: 'vertical',
+          contents: [
+            {
+              type: 'text',
+              text: '📽️ 遊戲說明影片',
+              weight: 'bold',
+              size: 'lg',
+              align: 'center'
+            },
+            {
+              type: 'text',
+              text: '點擊播放',
+              size: 'sm',
+              align: 'center',
+              color: '#888888'
+            }
+          ]
+        }
+      }
+    });
   }
+
 
   // 🟡 查詢遊戲紀錄區塊（放最前面）
   
