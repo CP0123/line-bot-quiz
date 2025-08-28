@@ -461,12 +461,14 @@ async function handleEvent(event) {
       .select()
       .eq('line_id', userId);
     
+    console.log(getAnswers);
+    console.log("----------------------------------------------------------");
 
     // 👀 取得所有題目
     const { data: getQuestions, error: checkGetQuestionsError } = await supabase
       .from('questions')
       .select()
-      .not('code', 'is', getAnswers);
+      .not('code', 'cs', getAnswers);
 
     console.log(getQuestions);
     return;
