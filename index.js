@@ -476,22 +476,36 @@ async function handleEvent(event) {
             },
             body: {
               type: 'box',
-              action: {
-                type: 'uri',
-                uri: 'https://line.me/R/ti/p/@ayr1866v'
-              },
               layout: 'vertical',
               contents: [
                 {
                   type: 'text',
                   text: "圖書館LINE(library's LINE)",
                   weight: 'bold',
-                  size: 'md',
-                  align: 'center'
+                  size: 'sm',
+                  align: 'center',
+                  wrap: true
+                }
+              ]
+            },
+            footer: {
+              type: 'box',
+              layout: 'vertical',
+              spacing: 'sm',
+              contents: [
+                {
+                  type: 'button',
+                  style: 'primary',
+                  action: {
+                    type: 'uri',
+                    uri: 'https://line.me/R/ti/p/@ayr1866v'
+                  },
+                  color: '#7D6AFF'
                 }
               ]
             }
-          },
+          }
+          ,
           {
             type: 'bubble',
             hero: {
@@ -508,18 +522,31 @@ async function handleEvent(event) {
             },
             body: {
               type: 'box',
-              action: {
-                type: 'uri',
-                uri: 'https://www.instagram.com/kmulibrary/'
-              },
               layout: 'vertical',
               contents: [
                 {
                   type: 'text',
                   text: "圖書館IG(library's Instagram)",
                   weight: 'bold',
-                  size: 'md',
-                  align: 'center'
+                  size: 'sm',
+                  align: 'center',
+                  wrap: true
+                }
+              ]
+            },
+            footer: {
+              type: 'box',
+              layout: 'vertical',
+              spacing: 'sm',
+              contents: [
+                {
+                  type: 'button',
+                  style: 'primary',
+                  action: {
+                    type: 'uri',
+                    uri: 'https://www.instagram.com/kmulibrary/'
+                  },
+                  color: '#7D6AFF'
                 }
               ]
             }
