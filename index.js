@@ -963,7 +963,7 @@ const flexItems = allCards.map(card => {
   // 7. 回覆背包 Bubble
   await client.replyMessage(event.replyToken, {
     type: 'flex',
-    altText: '你的背包',
+    altText: '集卡冊',
     contents: bubble
   });
 
