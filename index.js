@@ -991,7 +991,7 @@ const flexItems = allCards.map(card => {
                 weight: 'bold',
                 size: 'sm',
                 align: 'center',
-                "wrap": true
+                wrap: true
               }
             ]
           },
