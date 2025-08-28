@@ -454,6 +454,95 @@ async function handleEvent(event) {
   }
 
   if (userMessage === '圖書館資訊') {
+    return client.replyMessage(event.replyToken, {
+      type: 'flex',
+      altText: '遊戲說明Game Instructions',
+      contents: {
+        type: 'carousel',
+        contents: [
+          {
+            type: 'bubble',
+            hero: {
+              type: 'image',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_1.png',
+              size: 'full',
+              aspectRatio: '1:1',
+              aspectMode: 'cover'
+            },
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'text',
+                  text: "圖書館LINE(library's LINE)",
+                  weight: 'bold',
+                  size: 'sm',
+                  align: 'center',
+                  wrap: true
+                }
+              ]
+            },
+            footer: {
+              type: 'box',
+              layout: 'vertical',
+              spacing: 'sm',
+              contents: [
+                {
+                  type: 'button',
+                  style: 'primary',
+                  action: {
+                    type: 'uri',
+                    uri: 'https://line.me/R/ti/p/@ayr1866v'
+                  },
+                  color: '#7D6AFF'
+                }
+              ]
+            }
+          },
+          {
+            type: 'bubble',
+            hero: {
+              type: 'image',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_1.png',
+              size: 'full',
+              aspectRatio: '1:1',
+              aspectMode: 'cover'
+            },
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'text',
+                  text: "圖書館IG(library's Instagram)",
+                  weight: 'bold',
+                  size: 'sm',
+                  align: 'center',
+                  wrap: true
+                }
+              ]
+            },
+            footer: {
+              type: 'box',
+              layout: 'vertical',
+              spacing: 'sm',
+              contents: [
+                {
+                  type: 'button',
+                  style: 'primary',
+                  action: {
+                    type: 'uri',
+                    uri: 'https://line.me/R/ti/p/@ayr1866v'
+                  },
+                  color: '#7D6AFF'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    });
   }
 
   if (userMessage === '遊戲開始' || userMessage === '遊戲繼續') {
