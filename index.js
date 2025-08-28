@@ -542,61 +542,80 @@ async function handleEvent(event) {
       }
     });
   }
-  
+
   if (userMessage === '遊戲開始' || userMessage === '繼續遊玩') {
-    
-    console.log('✅ 所有題目代碼:', allCodes);
-    console.log('✅ 已完成題目代碼:', completedCodes);
-    console.log('✅ 尚未完成題目代碼:', remainingCodes);
-
-    
-    const { data: questions, error: qError } = await supabase
-      .from('questions')
-      .select();
+    try {
+      // 1. 取得所有題目代碼
+      const { data: questions, error: qError } = await supabase
+        .from('questions')
+        .select();
   
-    if (qError || !questions || questions.length === 0) {
+      if (qError || !questions || questions.length === 0) {
+        console.error('❌ 題目查詢失敗:', qError?.message);
+        return client.replyMessage(event.replyToken, {
+          type: 'text',
+          text: '⚠️ 無法載入題目，請稍後再試！'
+        });
+      }
+  
+      const allCodes = questions.map(q => q.code);
+      console.log('✅ 所有題目代碼:', allCodes);
+  
+      // 2. 查詢使用者已答對的題目代碼
+      const { data: answered, error: aError } = await supabase
+        .from('answers')
+        .select('question_code')
+        .eq('line_id', userId)
+        .eq('is_correct', true);
+  
+      if (aError) {
+        console.error('❌ 使用者答題查詢失敗:', aError?.message);
+        return client.replyMessage(event.replyToken, {
+          type: 'text',
+          text: '⚠️ 無法載入答題紀錄，請稍後再試！'
+        });
+      }
+  
+      const completedCodes = answered?.map(a => a.question_code) ?? [];
+      console.log('✅ 已完成題目代碼:', completedCodes);
+  
+      // 3. 篩選尚未完成的題目代碼
+      const remainingCodes = allCodes.filter(code => !completedCodes.includes(code));
+      console.log('✅ 尚未完成題目代碼:', remainingCodes);
+  
+      // 4. 若已完成所有題目
+      if (remainingCodes.length === 0) {
+        return client.replyMessage(event.replyToken, {
+          type: 'text',
+          text: '🎉 你已完成所有題目，太厲害了！'
+        });
+      }
+  
+      // 5. 建立 quickReply 選項
+      const quickReplyItems = remainingCodes.map(code => ({
+        type: 'action',
+        action: {
+          type: 'message',
+          label: code,
+          text: code
+        }
+      }));
+  
       return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: '⚠️ 無法載入題目，請稍後再試！'
+        text: '請選擇要挑戰的題目代碼：',
+        quickReply: {
+          items: quickReplyItems
+        }
       });
-    }
   
-    const allCodes = questions.map(q => q.code);
-  
-    const { data: answered, error: aError } = await supabase
-      .from('answers')
-      .select('question_code')
-      .eq('line_id', userId)
-      .eq('is_correct', true);
-  
-    const completedCodes = answered?.map(a => a.question_code) ?? [];
-    const remainingCodes = allCodes.filter(code => !completedCodes.includes(code));
-  
-    const quickReplyItems = remainingCodes.map(code => ({
-      type: 'action',
-      action: {
-        type: 'message',
-        label: code,
-        text: code
-      }
-    }));
-
-    
-    if (quickReplyItems.length === 0) {
+    } catch (err) {
+      console.error('❌ 發生例外錯誤:', err.message);
       return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: '🎉 你已完成所有題目，太厲害了！'
+        text: '🚫 發生錯誤，請稍後再試！'
       });
     }
-
-  
-    return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: '請選擇要挑戰的題目代碼：',
-      quickReply: {
-        items: quickReplyItems
-      }
-    });
   }
     
   // 🟡 查詢遊戲紀錄區塊（放最前面）
