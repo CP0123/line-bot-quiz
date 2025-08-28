@@ -482,16 +482,7 @@ async function handleEvent(event) {
                   wrap: true
                 }
               ]
-            },
-            footer: {
-                  type: 'button',
-                  style: 'primary',
-                  action: {
-                    type: 'uri',
-                    uri: 'https://line.me/R/ti/p/@ayr1866v'
-                  },
-                  color: '#7D6AFF'
-                }
+            }
           },
           {
             type: 'bubble',
@@ -515,16 +506,7 @@ async function handleEvent(event) {
                   wrap: true
                 }
               ]
-            },
-            footer: {
-                  type: 'button',
-                  style: 'primary',
-                  action: {
-                    type: 'uri',
-                    uri: 'https://line.me/R/ti/p/@ayr1866v'
-                  },
-                  color: '#7D6AFF'
-                }
+            }
           }
         ]
       }
