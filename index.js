@@ -545,6 +545,7 @@ async function handleEvent(event) {
 
   if (userMessage === '遊戲開始' || userMessage === '繼續遊玩') {
     try {
+      // 1. 取得所有題目並依照 Q 編號排序
       const { data: questions, error: qError } = await supabase
         .from('questions')
         .select();
@@ -557,9 +558,18 @@ async function handleEvent(event) {
         });
       }
   
-      const allCodes = questions.map(q => q.code).sort(); // 排序題目代碼
+      // 依照 Q 編號排序（Q1、Q2、...Q18）
+      const allCodes = questions
+        .map(q => q.code)
+        .sort((a, b) => {
+          const numA = parseInt(a.replace('Q', ''), 10);
+          const numB = parseInt(b.replace('Q', ''), 10);
+          return numA - numB;
+        });
+  
       console.log('✅ 所有題目代碼:', allCodes);
   
+      // 2. 查詢使用者已答對的題目代碼
       const { data: answered, error: aError } = await supabase
         .from('answers')
         .select('question_code')
@@ -577,26 +587,26 @@ async function handleEvent(event) {
       const completedCodes = answered?.map(a => a.question_code) ?? [];
       console.log('✅ 已完成題目代碼:', completedCodes);
   
-      let remainingCodes = [];
+      let displayCodes = [];
   
       if (completedCodes.length === 0) {
-        // 初次進入遊戲，只顯示 Q1～Q13
-        remainingCodes = allCodes.slice(0, 13);
+        // 初次進入遊戲：顯示 Q1～Q13
+        displayCodes = allCodes.slice(0, 13);
       } else {
         // 顯示尚未完成的題目（最多 13 題）
-        remainingCodes = allCodes.filter(code => !completedCodes.includes(code)).slice(0, 13);
+        const remainingCodes = allCodes.filter(code => !completedCodes.includes(code));
+        console.log('✅ 尚未完成題目代碼:', remainingCodes);
+        displayCodes = remainingCodes.slice(0, 13);
       }
   
-      console.log('✅ 顯示的題目代碼:', remainingCodes);
-  
-      if (remainingCodes.length === 0) {
+      if (displayCodes.length === 0) {
         return client.replyMessage(event.replyToken, {
           type: 'text',
           text: '🎉 你已完成所有題目，太厲害了！'
         });
       }
   
-      const quickReplyItems = remainingCodes.map(code => ({
+      const quickReplyItems = displayCodes.map(code => ({
         type: 'action',
         action: {
           type: 'message',
