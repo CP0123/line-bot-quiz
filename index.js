@@ -44,6 +44,23 @@ function buildCardBubble(card) {
           color: '#555555'
         }
       ]
+    },
+    footer: {
+      type: 'box',
+      layout: 'vertical',
+      contents: [
+        {
+          type: 'button',
+          action: {
+            type: 'uri',
+            label: '查看集卡冊\nView the Collectible Card Album',
+            text: '集卡冊',
+            wrap: true
+          },
+          style: 'primary',
+          color: '#778dc7'
+        }
+      ]
     }
   };
 }
