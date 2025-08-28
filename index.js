@@ -457,8 +457,11 @@ async function handleEvent(event) {
 
     // 取得所有題目代碼
     const { data: questions, qerror } = await supabase
-     .from('questions')
-     .select('code');
+      .from('questions')
+      .select('code')  
+      .order([
+        { column: 'sort', order: 'asc' }
+      ]);
     
     const allCodes = questions?.map(a => a.code) ?? [];
 
