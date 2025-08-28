@@ -769,11 +769,12 @@ const flexItems = allCards.map(card => {
       contents: [
         {
           type: 'text',
-          text: '集卡冊\nCollectible card album',
+          text: '集卡冊\n Collectible card album',
           weight: 'bold',
           size: 'md',
           align: 'center',
-          margin: 'md'
+          margin: 'md',
+          wrap: true
         },
         ...rows
       ]
