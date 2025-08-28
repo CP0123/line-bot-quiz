@@ -544,6 +544,12 @@ async function handleEvent(event) {
   }
   
   if (userMessage === '遊戲開始' || userMessage === '繼續遊玩') {
+    
+    console.log('✅ 所有題目代碼:', allCodes);
+    console.log('✅ 已完成題目代碼:', completedCodes);
+    console.log('✅ 尚未完成題目代碼:', remainingCodes);
+
+    
     const { data: questions, error: qError } = await supabase
       .from('questions')
       .select();
@@ -566,13 +572,6 @@ async function handleEvent(event) {
     const completedCodes = answered?.map(a => a.question_code) ?? [];
     const remainingCodes = allCodes.filter(code => !completedCodes.includes(code));
   
-    if (remainingCodes.length === 0) {
-      return client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: '🎉 你已完成所有題目，太厲害了！'
-      });
-    }
-  
     const quickReplyItems = remainingCodes.map(code => ({
       type: 'action',
       action: {
@@ -581,6 +580,15 @@ async function handleEvent(event) {
         text: code
       }
     }));
+
+    
+    if (quickReplyItems.length === 0) {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: '🎉 你已完成所有題目，太厲害了！'
+      });
+    }
+
   
     return client.replyMessage(event.replyToken, {
       type: 'text',
