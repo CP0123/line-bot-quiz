@@ -565,7 +565,10 @@ async function handleEvent(event) {
     const completedCodes = answered?.map(a => a.question_code) ?? [];
 
     // 篩選出尚未完成的題目
-    const remainingCodes = allCodes.filter(code => !completedCodes.includes(code));
+    var remainingCodes = allCodes;
+    if(completedCodes) {
+      remainingCodes = allCodes.filter(code => !completedCodes.includes(code));
+    } 
 
     // 建立 quick reply 選項
     const quickReplyItems = remainingCodes.map(code => ({
