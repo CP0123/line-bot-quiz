@@ -453,7 +453,7 @@ async function handleEvent(event) {
     });
   }
 
-  if (userMessage === '遊戲開始' || userMessage === '繼續遊戲') {
+  if (userMessage === '遊戲開始' || userMessage === '遊戲繼續') {
 
     // 取得所有題目代碼
     const { data: questions, qerror } = await supabase
@@ -921,6 +921,7 @@ const flexItems = allCards.map(card => {
     const question = data[0];
     const explain_text = question.explain_text;
     const explain_image = question.explain_image;
+    const explain_url = question.explain_url;
     const correctAnswer = question.correct_answer;
     const options = JSON.parse(question.options);
 
@@ -1003,8 +1004,8 @@ const flexItems = allCards.map(card => {
                 style: 'primary',
                 action: {
                   type: 'message',
-                  label: '繼續遊戲',
-                  text: '繼續遊戲'
+                  label: '遊戲繼續',
+                  text: '遊戲繼續'
                 },
                 color: '#7D6AFF'
               }
