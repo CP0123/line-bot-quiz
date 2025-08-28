@@ -990,7 +990,8 @@ const flexItems = allCards.map(card => {
                 text: explain_text,
                 weight: 'bold',
                 size: 'sm',
-                align: 'center'
+                align: 'center',
+                "wrap": true
               }
             ]
           },
