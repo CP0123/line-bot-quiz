@@ -317,7 +317,7 @@ async function handleEvent(event) {
   //卡片未獲得不回傳訊息
   if (userMessage === '您尚未獲得此卡片You have not yet obtained this card.') {
     // 預設回覆
-    return ;
+    return Promise.resolve(null);
   }
 
   if (userMessage === '遊戲說明') {
