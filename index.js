@@ -977,7 +977,7 @@ const flexItems = allCards.map(card => {
             type: 'image',
             url: explain_image,
             size: 'full',
-            aspectRatio: '16:9',
+            aspectRatio: '1:1',
             aspectMode: 'cover'
           },
           body: {
