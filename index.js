@@ -919,6 +919,8 @@ const flexItems = allCards.map(card => {
     }
 
     const question = data[0];
+    const explain_text = question.explain_text;
+    const explain_image = question.explain_image;
     const correctAnswer = question.correct_answer;
     const options = JSON.parse(question.options);
 
@@ -964,10 +966,13 @@ const flexItems = allCards.map(card => {
           .eq('line_id', userId);
         console.log('✅ 已更新分數:', currentScore + 10);
       }
-
-      return client.replyMessage(event.replyToken, {
+      client.replyMessage(event.replyToken, {
         type: 'text',
         text: '✅ 恭喜答對，獲得10分！Congratulations on answering correctly and earning 10 points!!'
+      });
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: explain_text
       });
     } else {
       const quickReplyItems = options.map((opt) => ({
