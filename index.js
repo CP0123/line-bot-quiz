@@ -464,6 +464,11 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
+              action: {
+                type: 'uri',
+                label: "圖書館LINE(library's LINE)",
+                uri: 'https://line.me/R/ti/p/@ayr1866v'
+              },
               url: 'https://olis.kmu.edu.tw/images/game/Instructions_1.png',
               size: 'full',
               aspectRatio: '9:16',
@@ -473,14 +478,13 @@ async function handleEvent(event) {
               type: 'box',
               action: {
                 type: 'uri',
-                label: "圖書館LINE(library's LINE)",
                 uri: 'https://line.me/R/ti/p/@ayr1866v'
               },
               layout: 'vertical',
               contents: [
                 {
                   type: 'text',
-                  text: '遊戲說明Game Instructions',
+                  text: '圖書館LINE(library's LINE)',
                   weight: 'bold',
                   size: 'md',
                   align: 'center'
@@ -492,6 +496,11 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
+              action: {
+                type: 'uri',
+                label: "圖書館IG(library's Instagram)",
+                uri: 'https://www.instagram.com/kmulibrary/'
+              },
               url: 'https://olis.kmu.edu.tw/images/game/Instructions_2.png',
               size: 'full',
               aspectRatio: '9:16',
@@ -501,14 +510,13 @@ async function handleEvent(event) {
               type: 'box',
               action: {
                 type: 'uri',
-                label: "圖書館IG(library's Instagram)",
                 uri: 'https://www.instagram.com/kmulibrary/'
               },
               layout: 'vertical',
               contents: [
                 {
                   type: 'text',
-                  text: '遊戲說明Game Instructions',
+                  text: '圖書館IG(library's Instagram)',
                   weight: 'bold',
                   size: 'md',
                   align: 'center'
