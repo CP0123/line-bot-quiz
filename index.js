@@ -478,6 +478,7 @@ async function handleEvent(event) {
               type: 'box',
               action: {
                 type: 'uri',
+                label: "圖書館LINE(library's LINE)",
                 uri: 'https://line.me/R/ti/p/@ayr1866v'
               },
               layout: 'vertical',
@@ -510,6 +511,7 @@ async function handleEvent(event) {
               type: 'box',
               action: {
                 type: 'uri',
+                label: "圖書館IG(library's Instagram)",
                 uri: 'https://www.instagram.com/kmulibrary/'
               },
               layout: 'vertical',
