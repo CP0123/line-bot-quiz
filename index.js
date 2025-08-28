@@ -458,7 +458,7 @@ async function handleEvent(event) {
     // 👀 取得所有題目
     const { data: getQuestions, error: checkGetQuestionsError } = await supabase
       .from('questions')
-      .select()
+      .select('*, answers!left(code)')
       .is('answers.question_code', null);
 
     console.log(getQuestions);
