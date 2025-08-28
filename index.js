@@ -190,7 +190,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_1.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_1.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -213,7 +213,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_2.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_2.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -236,7 +236,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_3.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_3.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -259,7 +259,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_4.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_4.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -282,7 +282,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_5.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_5.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -337,7 +337,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_1.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_1.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -360,7 +360,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_2.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_2.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -383,7 +383,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_3.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_3.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -406,7 +406,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_4.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_4.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -429,7 +429,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_5.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_5.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
