@@ -474,20 +474,6 @@ async function handleEvent(event) {
               aspectRatio: '1:1',
               aspectMode: 'cover'
             },
-            body: {
-              type: 'box',
-              layout: 'vertical',
-              contents: [
-                {
-                  type: 'text',
-                  text: "圖書館LINE(library's LINE)",
-                  weight: 'bold',
-                  size: 'sm',
-                  align: 'center',
-                  wrap: true
-                }
-              ]
-            },
             footer: {
               type: 'box',
               layout: 'vertical',
@@ -519,20 +505,6 @@ async function handleEvent(event) {
               size: 'full',
               aspectRatio: '1:1',
               aspectMode: 'cover'
-            },
-            body: {
-              type: 'box',
-              layout: 'vertical',
-              contents: [
-                {
-                  type: 'text',
-                  text: "圖書館IG(library's Instagram)",
-                  weight: 'bold',
-                  size: 'sm',
-                  align: 'center',
-                  wrap: true
-                }
-              ]
             },
             footer: {
               type: 'box',
