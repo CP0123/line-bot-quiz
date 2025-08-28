@@ -314,10 +314,9 @@ async function handleEvent(event) {
     delete userState[userId];
   }
 
-  //卡片未獲得不回傳訊息
-  if (userMessage === '您尚未獲得此卡片You have not yet obtained this card.') {
-    // 預設回覆
-    return Promise.resolve(null);
+  if (userMessage.trim().includes('您尚未獲得此卡片')) {
+  console.log('偵測到未獲得卡片的訊息，略過回覆');
+  return Promise.resolve(null);
   }
 
   if (userMessage === '遊戲說明') {
