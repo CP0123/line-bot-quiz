@@ -456,19 +456,19 @@ async function handleEvent(event) {
   if (userMessage === '遊戲開始') {
 
     // 👀 查詢已答對此題
-    const { data: existingAnswers, error: checkError } = await supabase
+    const { data: getAnswers, error: checkGetAnswersError } = await supabase
       .from('answers')
       .select()
       .eq('line_id', userId);
     
 
     // 👀 取得所有題目
-    const { data: Questions, error: checkError } = await supabase
+    const { data: getQuestions, error: checkGetQuestionsError } = await supabase
       .from('questions')
       .select()
-      .not('code', 'is', existingAnswers);
+      .not('code', 'is', getAnswers);
 
-    console.log(Questions);
+    console.log(getQuestions);
     return;
   }
     
