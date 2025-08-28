@@ -459,9 +459,7 @@ async function handleEvent(event) {
     const { data: questions, qerror } = await supabase
       .from('questions')
       .select('code')  
-      .order([
-        { column: 'sort', order: 'asc' }
-      ]);
+      .order('sort', { ascending: true });
     
     const allCodes = questions?.map(a => a.code) ?? [];
 
