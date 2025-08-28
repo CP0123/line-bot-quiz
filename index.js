@@ -464,7 +464,12 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Instructions_1.png',
+              action: {
+                type: 'uri',
+                label: "圖書館LINE(library's LINE)",
+                uri: 'https://line.me/R/ti/p/@ayr1866v'
+              },
+              url: 'https://olis.kmu.edu.tw/images/game/寶箱.png',
               size: 'full',
               aspectRatio: '1:1',
               aspectMode: 'cover'
@@ -488,7 +493,12 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Instructions_1.png',
+              action: {
+                type: 'uri',
+                label: "圖書館IG(library's Instagram)",
+                uri: 'https://www.instagram.com/kmulibrary/'
+              },
+              url: 'https://olis.kmu.edu.tw/images/game/寶箱.png',
               size: 'full',
               aspectRatio: '1:1',
               aspectMode: 'cover'
