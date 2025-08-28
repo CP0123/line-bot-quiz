@@ -966,9 +966,55 @@ const flexItems = allCards.map(card => {
           .eq('line_id', userId);
         console.log('✅ 已更新分數:', currentScore + 10);
       }
+      // return client.replyMessage(event.replyToken, {
+      //   type: 'text',
+      //   text: '✅ 恭喜答對，獲得10分！Congratulations on answering correctly and earning 10 points!!' + '\n' + explain_text
+      // });
+
+      
       return client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: '✅ 恭喜答對，獲得10分！Congratulations on answering correctly and earning 10 points!!' + '\n' + explain_text
+        type: 'flex',
+        altText: '回答結果',
+        contents: {
+          type: 'bubble',
+          hero: {
+            type: 'image',
+            url: explain_image,
+            size: 'full',
+            aspectRatio: '16:9',
+            aspectMode: 'cover'
+          },
+          body: {
+            type: 'box',
+            layout: 'vertical',
+            contents: [
+              {
+                type: 'text',
+                text: explain_text,
+                weight: 'bold',
+                size: 'sm',
+                align: 'center'
+              }
+            ]
+          },
+          footer: {
+            type: 'box',
+            layout: 'vertical',
+            spacing: 'sm',
+            contents: [
+              {
+                type: 'button',
+                style: 'primary',
+                action: {
+                  type: 'message',
+                  label: '繼續遊戲',
+                  text: '遊戲開始'
+                },
+                color: '#7D6AFF'
+              }
+            ]
+          }
+        }
       });
     } else {
       const quickReplyItems = options.map((opt) => ({
