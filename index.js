@@ -546,30 +546,30 @@ async function handleEvent(event) {
   }
 
   if (userMessage === '遊戲開始' || userMessage === '繼續遊玩') {
-
-    // 取得所有題目代碼
     const { data: questions, qerror } = await supabase
       .from('questions')
-      .select()  
+      .select()
       .order('sort_order', { ascending: true });
-    
+  
     const allCodes = questions?.map(a => a.code) ?? [];
-
-    // 查詢使用者已完成的題目
+  
     const { data: answered, error } = await supabase
-     .from('answers')
-     .select('question_code')
-     .eq('line_id', userId)
-     .eq('is_correct', true);
-
+      .from('answers')
+      .select('question_code')
+      .eq('line_id', userId)
+      .eq('is_correct', true);
+  
     const completedCodes = answered?.map(a => a.question_code) ?? [];
-
-    // 篩選出尚未完成的題目
     const remainingCodes = allCodes.filter(code => !completedCodes.includes(code));
-
-    console.log(remainingCodes);
-    
-    // 建立 quick reply 選項
+  
+    // 防呆：如果沒有剩下的題目，就回傳文字訊息
+    if (remainingCodes.length === 0) {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: '目前沒有可挑戰的題目，請稍後再試！'
+      });
+    }
+  
     const quickReplyItems = remainingCodes.map(code => ({
       type: 'action',
       action: {
@@ -578,7 +578,7 @@ async function handleEvent(event) {
         text: code
       }
     }));
-
+  
     return client.replyMessage(event.replyToken, {
       type: 'text',
       text: '請選擇要挑戰的題目代碼：',
