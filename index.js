@@ -453,6 +453,74 @@ async function handleEvent(event) {
     });
   }
 
+  if (userMessage === '圖書館資訊') {
+    return client.replyMessage(event.replyToken, {
+      type: 'flex',
+      altText: '遊戲說明Game Instructions',
+      contents: {
+        type: 'carousel',
+        contents: [
+          {
+            type: 'bubble',
+            hero: {
+              type: 'image',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_1.png',
+              size: 'full',
+              aspectRatio: '9:16',
+              aspectMode: 'cover'
+            },
+            body: {
+              type: 'box',
+              action: {
+                type: 'uri',
+                label: "圖書館LINE(library's LINE)",
+                uri: 'https://line.me/R/ti/p/@ayr1866v'
+              },
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'text',
+                  text: '遊戲說明Game Instructions',
+                  weight: 'bold',
+                  size: 'md',
+                  align: 'center'
+                }
+              ]
+            }
+          },
+          {
+            type: 'bubble',
+            hero: {
+              type: 'image',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_2.png',
+              size: 'full',
+              aspectRatio: '9:16',
+              aspectMode: 'cover'
+            },
+            body: {
+              type: 'box',
+              action: {
+                type: 'uri',
+                label: "圖書館IG(library's Instagram)",
+                uri: 'https://www.instagram.com/kmulibrary/'
+              },
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'text',
+                  text: '遊戲說明Game Instructions',
+                  weight: 'bold',
+                  size: 'md',
+                  align: 'center'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    });
+  }
+
   if (userMessage === '遊戲開始' || userMessage === '遊戲繼續') {
 
     // 取得所有題目代碼
