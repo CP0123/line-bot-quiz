@@ -478,14 +478,13 @@ async function handleEvent(event) {
               type: 'box',
               action: {
                 type: 'uri',
-                label: "圖書館LINE(library's LINE)",
                 uri: 'https://line.me/R/ti/p/@ayr1866v'
               },
               layout: 'vertical',
               contents: [
                 {
                   type: 'text',
-                  text: '圖書館LINE(library's LINE)',
+                  text: "圖書館LINE(library's LINE)",
                   weight: 'bold',
                   size: 'md',
                   align: 'center'
@@ -511,14 +510,13 @@ async function handleEvent(event) {
               type: 'box',
               action: {
                 type: 'uri',
-                label: "圖書館IG(library's Instagram)",
                 uri: 'https://www.instagram.com/kmulibrary/'
               },
               layout: 'vertical',
               contents: [
                 {
                   type: 'text',
-                  text: '圖書館IG(library's Instagram)',
+                  text: "圖書館IG(library's Instagram)",
                   weight: 'bold',
                   size: 'md',
                   align: 'center'
