@@ -453,7 +453,7 @@ async function handleEvent(event) {
     });
   }
 
-  if (userMessage === '遊戲開始') {
+  if (userMessage === '遊戲開始' || userMessage === '繼續遊戲') {
 
     // 取得所有題目代碼
     const { data: questions, qerror } = await supabase
@@ -1004,7 +1004,7 @@ const flexItems = allCards.map(card => {
                 action: {
                   type: 'message',
                   label: '繼續遊戲',
-                  text: '遊戲開始'
+                  text: '繼續遊戲'
                 },
                 color: '#7D6AFF'
               }
