@@ -65,11 +65,12 @@ function buildUnlockBubble() {
       contents: [
         {
           type: 'text',
-          text: '更多資訊 More information',
+          text: "遊戲達人就是你！\n You're the Game Master!",
           size: 'md',
           weight: 'bold',
           color: '#666666',
-          align: 'center'
+          align: 'center',
+          wrap: true
         },
       ]
     },
@@ -81,33 +82,11 @@ function buildUnlockBubble() {
           type: 'button',
           action: {
             type: 'uri',
-            label: '遊玩回饋Feedback',
+            label: '遊玩回饋 Feedback',
             uri: 'https://nc.kmu.edu.tw/index.php/apps/forms/s/dNaRWwcXDNTjLRfwgEz5Kama'
           },
           style: 'primary',
           color: '#778dc7'
-        },
-        
-        {
-          type: 'button',
-          action: {
-            type: 'uri',
-            label: "圖書館LINE(library's LINE)",
-            uri: 'https://line.me/R/ti/p/@ayr1866v'
-          },
-          style: 'primary',
-          color: '#9bc650'
-        },
-        
-        {
-          type: 'button',
-          action: {
-            type: 'uri',
-            label: "圖書館IG(library's Instagram)",
-            uri: 'https://www.instagram.com/kmulibrary/'
-          },
-          style: 'primary',
-          color: '#FF6B00'
         }
       ]
     }
@@ -316,7 +295,7 @@ async function handleEvent(event) {
   const upperMessage = userMessage.toUpperCase();
   
   //輸入關鍵字清除答題狀態
-  if (userMessage === '抽卡' || userMessage === '集卡冊' || userMessage === '您尚未獲得此卡片\nYou have not yet obtained this card.' || userMessage === '獎勵兌換' || userMessage === '遊戲紀錄'|| userMessage === '遊戲說明') {
+  if (userMessage === '抽卡' || userMessage === '集卡冊' || userMessage === '您尚未獲得此卡片\nYou have not yet obtained this card.' || userMessage === '獎勵兌換' || userMessage === '遊戲紀錄'|| userMessage === '遊戲說明'||userMessage === '圖書館資訊' || userMessage === '遊戲開始' || userMessage === '繼續遊玩') {
     delete userState[userId];
   }
 
@@ -464,11 +443,6 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              action: {
-                type: 'uri',
-                label: "圖書館LINE(library's LINE)",
-                uri: 'https://line.me/R/ti/p/@ayr1866v'
-              },
               url: 'https://olis.kmu.edu.tw/images/game/寶箱.png',
               size: 'full',
               aspectRatio: '1:1',
@@ -477,14 +451,32 @@ async function handleEvent(event) {
             body: {
               type: 'box',
               layout: 'vertical',
+              spacing: 'md',
               contents: [
                 {
                   type: 'text',
-                  text: "圖書館LINE(library's LINE)",
+                  text: "圖書館LINE\n(library's LINE)",
+                  size: 'md',
                   weight: 'bold',
-                  size: 'sm',
+                  color: '#666666',
                   align: 'center',
                   wrap: true
+                },
+              ]
+            },
+            footer: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'button',
+                  action: {
+                    type: 'uri',
+                    label: '加好友 Add as friend',
+                    uri: 'https://line.me/R/ti/p/%40ayr1866v'
+                  },
+                  style: 'primary',
+                  color: '#778dc7'
                 }
               ]
             }
@@ -493,11 +485,6 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              action: {
-                type: 'uri',
-                label: "圖書館IG(library's Instagram)",
-                uri: 'https://www.instagram.com/kmulibrary/'
-              },
               url: 'https://olis.kmu.edu.tw/images/game/寶箱.png',
               size: 'full',
               aspectRatio: '1:1',
@@ -506,14 +493,32 @@ async function handleEvent(event) {
             body: {
               type: 'box',
               layout: 'vertical',
+              spacing: 'md',
               contents: [
                 {
                   type: 'text',
-                  text: "圖書館IG(library's Instagram)",
+                  text: "圖書館IG\n(library's Instagram)",
+                  size: 'md',
                   weight: 'bold',
-                  size: 'sm',
+                  color: '#666666',
                   align: 'center',
                   wrap: true
+                },
+              ]
+            },
+            footer: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'button',
+                  action: {
+                    type: 'uri',
+                    label: '追蹤 Follow',
+                    uri: 'https://line.me/R/ti/p/%40ayr1866v'
+                  },
+                  style: 'primary',
+                  color: '#778dc7'
                 }
               ]
             }
@@ -523,7 +528,7 @@ async function handleEvent(event) {
     });
   }
 
-  if (userMessage === '遊戲開始' || userMessage === '遊戲繼續') {
+  if (userMessage === '遊戲開始' || userMessage === '繼續遊玩') {
 
     // 取得所有題目代碼
     const { data: questions, qerror } = await supabase
@@ -596,8 +601,49 @@ async function handleEvent(event) {
 
     delete userState[userId];
     return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: `🎮 遊戲紀錄Game Record：\n✅ 答對題數Number of Questions Completed：${correctAnswers}\n🏆 當前得分Current score：${score} `
+      type: 'flex',
+      altText: '遊戲紀錄 Game Record',
+      contents: {
+        type: 'bubble',
+        body: {
+          type: 'box',
+          layout: 'vertical',
+          spacing: 'md',
+          contents: [
+            {
+              type: 'text',
+              text: '🎮 遊戲紀錄 Game Record',
+              weight: 'bold',
+              size: 'lg'
+            },
+            {
+              type: 'text',
+              text: `✅ 答對題數 Number of Questions Completed：${correctAnswers}`,
+              wrap: true
+            },
+            {
+              type: 'text',
+              text: `🏆 當前得分 Current score：${score}`,
+              wrap: true
+            }
+          ]
+        },
+        footer: {
+          type: 'box',
+          layout: 'vertical',
+          contents: [
+            {
+              type: 'button',
+              style: 'primary',
+              action: {
+                type: 'message',
+                label: '繼續遊玩 Continue playing',
+                text: '繼續遊玩'
+              }
+            }
+          ]
+        }
+      }
     });
   }
 
@@ -1076,8 +1122,8 @@ const flexItems = allCards.map(card => {
                 style: 'primary',
                 action: {
                   type: 'message',
-                  label: '遊戲繼續',
-                  text: '遊戲繼續'
+                  label: '繼續遊玩 Continue playing',
+                  text: '繼續遊玩'
                 },
                 color: '#7D6AFF'
               }
