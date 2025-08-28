@@ -190,7 +190,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/TEST.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_1.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -201,7 +201,7 @@ async function handleEvent(event) {
               contents: [
                 {
                   type: 'text',
-                  text: '🎮遊戲介面 Game Interface',
+                  text: '遊戲說明Game Instructions',
                   weight: 'bold',
                   size: 'md',
                   align: 'center'
@@ -213,7 +213,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/TEST.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_2.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -224,7 +224,7 @@ async function handleEvent(event) {
               contents: [
                 {
                   type: 'text',
-                  text: '🎮遊戲方式 How to Play',
+                  text: '遊戲說明Game Instructions',
                   weight: 'bold',
                   size: 'md',
                   align: 'center'
@@ -236,7 +236,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/TEST.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_3.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -247,7 +247,53 @@ async function handleEvent(event) {
               contents: [
                 {
                   type: 'text',
-                  text: '🎮遊戲選單功能 Game Menu Features',
+                  text: '遊戲說明Game Instructions',
+                  weight: 'bold',
+                  size: 'md',
+                  align: 'center'
+                }
+              ]
+            }
+          },
+          {
+            type: 'bubble',
+            hero: {
+              type: 'image',
+              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_4.png',
+              size: 'full',
+              aspectRatio: '9:16',
+              aspectMode: 'cover'
+            },
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'text',
+                  text: '遊戲說明Game Instructions',
+                  weight: 'bold',
+                  size: 'md',
+                  align: 'center'
+                }
+              ]
+            }
+          },
+          {
+            type: 'bubble',
+            hero: {
+              type: 'image',
+              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_5.png',
+              size: 'full',
+              aspectRatio: '9:16',
+              aspectMode: 'cover'
+            },
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'text',
+                  text: '遊戲說明Game Instructions',
                   weight: 'bold',
                   size: 'md',
                   align: 'center'
@@ -287,15 +333,14 @@ async function handleEvent(event) {
       contents: {
         type: 'carousel',
         contents: [
-          /*第一頁-遊戲介面*/
           {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/TEST.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_1.png',
               size: 'full',
               aspectRatio: '9:16',
-              aspectMode: 'cover',
+              aspectMode: 'cover'
             },
             body: {
               type: 'box',
@@ -303,31 +348,7 @@ async function handleEvent(event) {
               contents: [
                 {
                   type: 'text',
-                  text: '🎮遊戲介面 Game Interface',
-                  weight: 'bold',
-                  size: 'md',
-                  align: 'center'
-                }
-              ]
-            }
-          },
-          /*第二頁-遊戲方式*/
-          {
-            type: 'bubble',
-            hero: {
-              type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/TEST.png', // 第二部影片預覽圖
-              size: 'full',
-              aspectRatio: '9:16',
-              aspectMode: 'cover',
-            },
-            body: {
-              type: 'box',
-              layout: 'vertical',
-              contents: [
-                {
-                  type: 'text',
-                  text: '🎮遊戲方式 How to Play',
+                  text: '遊戲說明Game Instructions',
                   weight: 'bold',
                   size: 'md',
                   align: 'center'
@@ -339,10 +360,10 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/TEST.png', // 第二部影片預覽圖
+              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_2.png',
               size: 'full',
               aspectRatio: '9:16',
-              aspectMode: 'cover',
+              aspectMode: 'cover'
             },
             body: {
               type: 'box',
@@ -350,7 +371,76 @@ async function handleEvent(event) {
               contents: [
                 {
                   type: 'text',
-                  text: '🎮遊戲選單功能 Game Menu Features',
+                  text: '遊戲說明Game Instructions',
+                  weight: 'bold',
+                  size: 'md',
+                  align: 'center'
+                }
+              ]
+            }
+          },
+          {
+            type: 'bubble',
+            hero: {
+              type: 'image',
+              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_3.png',
+              size: 'full',
+              aspectRatio: '9:16',
+              aspectMode: 'cover'
+            },
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'text',
+                  text: '遊戲說明Game Instructions',
+                  weight: 'bold',
+                  size: 'md',
+                  align: 'center'
+                }
+              ]
+            }
+          },
+          {
+            type: 'bubble',
+            hero: {
+              type: 'image',
+              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_4.png',
+              size: 'full',
+              aspectRatio: '9:16',
+              aspectMode: 'cover'
+            },
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'text',
+                  text: '遊戲說明Game Instructions',
+                  weight: 'bold',
+                  size: 'md',
+                  align: 'center'
+                }
+              ]
+            }
+          },
+          {
+            type: 'bubble',
+            hero: {
+              type: 'image',
+              url: 'https://olis.kmu.edu.tw/images/game/Game_Instructions_5.png',
+              size: 'full',
+              aspectRatio: '9:16',
+              aspectMode: 'cover'
+            },
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'text',
+                  text: '遊戲說明Game Instructions',
                   weight: 'bold',
                   size: 'md',
                   align: 'center'
