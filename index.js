@@ -455,14 +455,38 @@ async function handleEvent(event) {
 
   if (userMessage === '遊戲開始') {
 
-    // 👀 取得所有題目
-    const { data: getQuestions, error: checkGetQuestionsError } = await supabase
-      .from('questions')
-      .select('*')
-      .not('code', 'in', '(SELECT question_code FROM answers WHERE line_id = '+userId+')');
+    // 取得所有題目代碼
+    const allCodes = Array.from({ length: 18 }, (_, i) => `Q${i + 1}`);
 
-    console.log(getQuestions);
-    return;
+    // 查詢使用者已完成的題目
+    const { data: answered, error } = await supabase
+     .from('answers')
+     .select('question_code')
+     .eq('line_id', userId)
+     .eq('is_correct', true);
+
+    const completedCodes = answered?.map(a => a.question_code) ?? [];
+
+    // 篩選出尚未完成的題目
+    const remainingCodes = allCodes.filter(code => !completedCodes.includes(code));
+
+    // 建立 quick reply 選項
+    const quickReplyItems = remainingCodes.map(code => ({
+      type: 'action',
+      action: {
+        type: 'message',
+        label: code,
+        text: code
+      }
+    }));
+
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: '請選擇要挑戰的題目代碼：',
+      quickReply: {
+        items: quickReplyItems
+      }
+    });
   }
     
   // 🟡 查詢遊戲紀錄區塊（放最前面）
