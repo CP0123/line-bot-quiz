@@ -44,7 +44,22 @@ function buildCardBubble(card) {
           color: '#555555'
         }
       ]
-    }
+    },
+        footer: {
+          type: 'box',
+          layout: 'vertical',
+          contents: [
+            {
+              type: 'button',
+              style: 'primary',
+              action: {
+                type: 'message',
+                label: '集卡冊',
+                text: '集卡冊'
+              }
+            }
+          ]
+        }
   };
 }
 
