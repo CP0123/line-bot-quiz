@@ -471,7 +471,7 @@ async function handleEvent(event) {
               },
               url: 'https://olis.kmu.edu.tw/images/game/寶箱.png',
               size: 'full',
-              aspectRatio: '9:16',
+              aspectRatio: '1:1',
               aspectMode: 'cover'
             },
             body: {
@@ -503,7 +503,7 @@ async function handleEvent(event) {
               },
               url: 'https://olis.kmu.edu.tw/images/game/寶箱.png',
               size: 'full',
-              aspectRatio: '9:16',
+              aspectRatio: '1:1',
               aspectMode: 'cover'
             },
             body: {
