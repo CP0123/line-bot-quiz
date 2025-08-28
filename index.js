@@ -458,9 +458,8 @@ async function handleEvent(event) {
     // 👀 取得所有題目
     const { data: getQuestions, error: checkGetQuestionsError } = await supabase
       .from('questions')
-      .select('*, answers!left(code)')
-      .is('answers.question_code', null)
-      .eq('line_id', userId);
+      .select('*')
+      .not('code', 'in', '(SELECT question_code FROM answers WHERE line_id = '+userId+')');
 
     console.log(getQuestions);
     return;
