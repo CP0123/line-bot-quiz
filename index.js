@@ -484,11 +484,6 @@ async function handleEvent(event) {
               ]
             },
             footer: {
-              type: 'box',
-              layout: 'vertical',
-              spacing: 'sm',
-              contents: [
-                {
                   type: 'button',
                   style: 'primary',
                   action: {
@@ -497,8 +492,6 @@ async function handleEvent(event) {
                   },
                   color: '#7D6AFF'
                 }
-              ]
-            }
           },
           {
             type: 'bubble',
@@ -524,11 +517,6 @@ async function handleEvent(event) {
               ]
             },
             footer: {
-              type: 'box',
-              layout: 'vertical',
-              spacing: 'sm',
-              contents: [
-                {
                   type: 'button',
                   style: 'primary',
                   action: {
@@ -537,8 +525,6 @@ async function handleEvent(event) {
                   },
                   color: '#7D6AFF'
                 }
-              ]
-            }
           }
         ]
       }
