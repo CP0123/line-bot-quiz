@@ -544,16 +544,22 @@ async function handleEvent(event) {
       }
     });
   }
-
+  
   if (userMessage === '遊戲開始' || userMessage === '繼續遊玩') {
-    const { data: questions, qerror } = await supabase
+    const { data: questions, error: qError } = await supabase
       .from('questions')
-      .select()
-      .order('sort_order', { ascending: true });
+      .select();
   
-    const allCodes = questions?.map(a => a.code) ?? [];
+    if (qError || !questions || questions.length === 0) {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: '⚠️ 無法載入題目，請稍後再試！'
+      });
+    }
   
-    const { data: answered, error } = await supabase
+    const allCodes = questions.map(q => q.code);
+  
+    const { data: answered, error: aError } = await supabase
       .from('answers')
       .select('question_code')
       .eq('line_id', userId)
@@ -562,11 +568,10 @@ async function handleEvent(event) {
     const completedCodes = answered?.map(a => a.question_code) ?? [];
     const remainingCodes = allCodes.filter(code => !completedCodes.includes(code));
   
-    // 防呆：如果沒有剩下的題目，就回傳文字訊息
     if (remainingCodes.length === 0) {
       return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: '目前沒有可挑戰的題目，請稍後再試！'
+        text: '🎉 你已完成所有題目，太厲害了！'
       });
     }
   
