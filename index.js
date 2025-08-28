@@ -966,13 +966,9 @@ const flexItems = allCards.map(card => {
           .eq('line_id', userId);
         console.log('✅ 已更新分數:', currentScore + 10);
       }
-      client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: '✅ 恭喜答對，獲得10分！Congratulations on answering correctly and earning 10 points!!'
-      });
       return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: explain_text
+        text: '✅ 恭喜答對，獲得10分！Congratulations on answering correctly and earning 10 points!!' + '\n' + explain_text
       });
     } else {
       const quickReplyItems = options.map((opt) => ({
