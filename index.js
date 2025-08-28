@@ -310,12 +310,12 @@ async function handleEvent(event) {
   const upperMessage = userMessage.toUpperCase();
   
   //輸入關鍵字清除答題狀態
-  if (userMessage === '抽卡' || userMessage === '集卡冊' || userMessage === '您尚未獲得此卡片\nYou have not yet obtained this card.' || userMessage === '獎勵兌換' || userMessage === '遊戲紀錄'|| userMessage === '遊戲說明'||userMessage === '圖書館資訊' || userMessage === '遊戲開始' || userMessage === '繼續遊玩') {
+  if (userMessage === '抽卡' || userMessage === '集卡冊' || userMessage === '您尚未獲得此卡片You have not yet obtained this card.' || userMessage === '獎勵兌換' || userMessage === '遊戲紀錄'|| userMessage === '遊戲說明'||userMessage === '圖書館資訊' || userMessage === '遊戲開始' || userMessage === '繼續遊玩') {
     delete userState[userId];
   }
 
   //卡片未獲得不回傳訊息
-  if (userMessage === '您尚未獲得此卡片\nYou have not yet obtained this card.') {
+  if (userMessage === '您尚未獲得此卡片You have not yet obtained this card.') {
     // 預設回覆
     return ;
   }
@@ -910,7 +910,7 @@ const flexItems = allCards.map(card => {
           action: {
             type: 'message',
             label: '?',
-            text: '您尚未獲得此卡片\nYou have not yet obtained this card.'
+            text: '您尚未獲得此卡片You have not yet obtained this card.'
           }
         }
       ]; // 未解鎖不顯示圖片
