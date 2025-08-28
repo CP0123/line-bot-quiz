@@ -455,20 +455,11 @@ async function handleEvent(event) {
 
   if (userMessage === '遊戲開始') {
 
-    // 👀 查詢已答對此題
-    const { data: getAnswers, error: checkGetAnswersError } = await supabase
-      .from('answers')
-      .select('question_code')
-      .eq('line_id', userId);
-    
-    console.log(getAnswers);
-    console.log("----------------------------------------------------------");
-
     // 👀 取得所有題目
     const { data: getQuestions, error: checkGetQuestionsError } = await supabase
       .from('questions')
       .select()
-      .not('code', 'cs', getAnswers);
+      .is('answers.question_code', null);
 
     console.log(getQuestions);
     return;
