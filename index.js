@@ -458,7 +458,7 @@ async function handleEvent(event) {
     // 👀 查詢已答對此題
     const { data: getAnswers, error: checkGetAnswersError } = await supabase
       .from('answers')
-      .select()
+      .select('question_code')
       .eq('line_id', userId);
     
     console.log(getAnswers);
