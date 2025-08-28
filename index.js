@@ -456,7 +456,7 @@ async function handleEvent(event) {
   if (userMessage === '圖書館資訊') {
     return client.replyMessage(event.replyToken, {
       type: 'flex',
-      altText: '遊戲說明Game Instructions',
+      altText: '圖書館資訊',
       contents: {
         type: 'carousel',
         contents: [
