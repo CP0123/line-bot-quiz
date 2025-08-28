@@ -455,12 +455,11 @@ async function handleEvent(event) {
 
   if (userMessage === '遊戲開始') {
 
-    // 查詢使用者已完成的題目
-    const { data: questions, error } = await supabase
+    // 取得所有題目代碼
+    const { data: questions, qerror } = await supabase
      .from('questions')
      .select('code');
     
-    // 取得所有題目代碼
     const allCodes = questions?.map(a => a.code) ?? [];
 
     // 查詢使用者已完成的題目
