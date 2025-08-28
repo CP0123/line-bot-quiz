@@ -966,10 +966,6 @@ const flexItems = allCards.map(card => {
           .eq('line_id', userId);
         console.log('✅ 已更新分數:', currentScore + 10);
       }
-      // return client.replyMessage(event.replyToken, {
-      //   type: 'text',
-      //   text: '✅ 恭喜答對，獲得10分！Congratulations on answering correctly and earning 10 points!!' + '\n' + explain_text
-      // });
 
       
       return client.replyMessage(event.replyToken, {
