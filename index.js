@@ -618,6 +618,23 @@ async function handleEvent(event) {
   const QUESTIONS_PER_PAGE = 12;
 
   if (userMessage === '遊戲開始' || userMessage === '繼續遊玩') {
+    
+    // 🔐 確保使用者紀錄存在
+      const { data: userRecord, error: userError } = await supabase
+        .from('users')
+        .select()
+        .eq('line_id', userId);
+    
+      if (!userRecord || userRecord.length === 0) {
+        await supabase.from('users').insert([
+          {
+            line_id: userId,
+            score: 0,
+            created_at: new Date().toISOString()
+          }
+        ]);
+      }
+
   try {
     const { data: questions, error: qError } = await supabase
       .from('questions')
