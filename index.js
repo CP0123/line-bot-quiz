@@ -659,7 +659,7 @@ async function handleEvent(event) {
     const remainingCodes = allCodes.filter(code => !completedCodes.includes(code));
     const passCodesCount = 9;
 
-    if (remainingCodes.length === 0 || completedCodes >= passCodesCount) {
+    if (remainingCodes.length === 0 || completedCodes.length >= passCodesCount) {
       const { data: userData, error: userError } = await supabase
       .from('users')
       .select()
