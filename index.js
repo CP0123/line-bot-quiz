@@ -669,59 +669,63 @@ async function handleEvent(event) {
 
     const correctAnswers = answerData?.filter(a => a.is_correct)?.length ?? 0;
 
+      
+    return client.replyMessage(event.replyToken, [
+      {
+        type: 'text',
+        text: "🎉 你已完成所有題目！\nYou've completed all the questions!"
+      },
+      {
+        type: 'flex',
+        altText: '遊戲紀錄 Game Record',
+        contents: {
+          type: 'bubble',
+          body: {
+            type: 'box',
+            layout: 'vertical',
+            spacing: 'md',
+            contents: [
+              {
+                type: 'text',
+                text: '🎮 遊戲紀錄 Game Record',
+                weight: 'bold',
+                size: 'lg'
+              },
+              {
+                type: 'text',
+                text: `✅ 答對題數 Number of Questions Completed：${correctAnswers}`,
+                wrap: true
+              },
+              {
+                type: 'text',
+                text: `🏆 當前得分 Current score：${score}`,
+                wrap: true
+              }
+            ]
+          },
+          footer: {
+            type: 'box',
+            layout: 'vertical',
+            contents: [
+              {
+                type: 'button',
+                style: 'primary',
+                action: {
+                  type: 'message',
+                  label: '來去抽卡 Go to Drawing Card',
+                  text: '抽卡'
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]);  
+
+        
     delete userState[userId];
     
-          return client.replyMessage(event.replyToken, {
-            type: 'text',
-            text: "🎉 你已完成所有題目！\nYou've completed all the questions!",
-            wrap: true
-          },
-          {
-            type: 'flex',
-            altText: '遊戲紀錄 Game Record',
-            contents: {
-              type: 'bubble',
-              body: {
-                type: 'box',
-                layout: 'vertical',
-                spacing: 'md',
-                contents: [
-                  {
-                    type: 'text',
-                    text: '🎮 遊戲紀錄 Game Record',
-                    weight: 'bold',
-                    size: 'lg'
-                  },
-                  {
-                    type: 'text',
-                    text: `✅ 答對題數 Number of Questions Completed：${correctAnswers}`,
-                    wrap: true
-                  },
-                  {
-                    type: 'text',
-                    text: `🏆 當前得分 Current score：${score}`,
-                    wrap: true
-                  }
-                ]
-              },
-              footer: {
-                type: 'box',
-                layout: 'vertical',
-                contents: [
-                  {
-                    type: 'button',
-                    style: 'primary',
-                    action: {
-                      type: 'message',
-                      label: '來去抽卡 Go to Drawing Card',
-                      text: '抽卡'
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        );
+          
       }
   
       // 取得目前偏移量
