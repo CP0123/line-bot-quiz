@@ -932,6 +932,8 @@ if (userMessage === '更多題目') {
     });
   }
 
+
+  const costScore = 10;
   if (userMessage === '獎勵兌換') {
     // 1. 查詢使用者分數
     const { data: userData, error: userError } = await supabase
@@ -941,11 +943,11 @@ if (userMessage === '更多題目') {
 
     const currentScore = userData?.[0]?.score ?? 0;
 
-    //查詢後發現小於20分, 即回傳預設文字;大於20分即呈現抽卡的Flex Message (bubble)
-    if (currentScore < 20) {
+    //查詢後發現小於10分, 即回傳預設文字;大於10分即呈現抽卡的Flex Message (bubble)
+    if (currentScore < costScore) {
       return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: '💸 目前分數不足以抽卡（需有20分）\nYour current score is insufficient to draw cards (20 points are required).'
+        text: '💸 目前分數不足以抽卡（需有' + costScore + '分）\nYour current score is insufficient to draw cards (' + costScore + ' points are required).'
       });
     }else {
       return client.replyMessage(event.replyToken, {
@@ -966,7 +968,7 @@ if (userMessage === '更多題目') {
             contents: [
               {
                 type: 'text',
-                text: '扣20分抽卡 Draw a card (-20 points)',
+                text: '扣' + costScore + '分抽卡 Draw a card (-' + costScore + ' points)',
                 weight: 'bold',
                 size: 'sm',
                 align: 'center'
@@ -994,8 +996,6 @@ if (userMessage === '更多題目') {
       });
     }
     }
-
-
   if (userMessage === '抽卡') {
     // 1. 查詢使用者分數
     const { data: userData, error: userError } = await supabase
@@ -1026,10 +1026,10 @@ if (userMessage === '更多題目') {
       altText: '✨ 集卡完成！',
       contents: bubble
     });
-  }else if(currentScore < 20){
+  }else if(currentScore < costScore){
     return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: '💸 目前分數不足以抽卡（需有20分）\nYour current score is insufficient to draw cards (20 points are required).'
+        text: '💸 目前分數不足以抽卡（需有' + costScore + '分）\nYour current score is insufficient to draw cards (' + costScore + ' points are required).'
       });
   }
 
@@ -1058,7 +1058,7 @@ if (userMessage === '更多題目') {
   // 9. 扣除分數
   await supabase
     .from('users')
-    .update({ score: currentScore - 20 })
+    .update({ score: currentScore - costScore })
     .eq('line_id', userId);
 
   // 10. 回覆 Flex Bubble
