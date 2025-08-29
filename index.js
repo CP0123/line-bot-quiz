@@ -176,7 +176,7 @@ async function handleEvent(event) {
   if(event.type === 'follow'){
     return client.replyMessage(event.replyToken, {
       type: 'flex',
-      altText: '遊戲說明Game Instructions',
+      altText: '遊戲說明Game Instruction',
       contents: {
         type: 'carousel',
         contents: [
@@ -184,10 +184,14 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Instructions_1.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_01.png',
               size: 'full',
               aspectRatio: '9:16',
-              aspectMode: 'cover'
+              aspectMode: 'cover',
+              action: {
+                type: 'message',
+                text: '遊戲開始'
+              }
             },
             body: {
               type: 'box',
@@ -195,7 +199,7 @@ async function handleEvent(event) {
               contents: [
                 {
                   type: 'text',
-                  text: '遊戲說明Game Instructions',
+                  text: '遊戲說明Game Instruction',
                   weight: 'bold',
                   size: 'md',
                   align: 'center'
@@ -207,7 +211,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Instructions_2.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_02.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -218,10 +222,11 @@ async function handleEvent(event) {
               contents: [
                 {
                   type: 'text',
-                  text: '遊戲說明Game Instructions',
+                  text: '遊戲介面Game Interface',
                   weight: 'bold',
                   size: 'md',
-                  align: 'center'
+                  align: 'center',
+                  wrap: true
                 }
               ]
             }
@@ -230,7 +235,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Instructions_3.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_03.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -241,10 +246,11 @@ async function handleEvent(event) {
               contents: [
                 {
                   type: 'text',
-                  text: '遊戲說明Game Instructions',
+                  text: '遊戲方式How to Play',
                   weight: 'bold',
                   size: 'md',
-                  align: 'center'
+                  align: 'center',
+                  wrap: true
                 }
               ]
             }
@@ -253,7 +259,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Instructions_4.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_04.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -264,10 +270,11 @@ async function handleEvent(event) {
               contents: [
                 {
                   type: 'text',
-                  text: '遊戲說明Game Instructions',
+                  text: '遊戲方式How to Play',
                   weight: 'bold',
                   size: 'md',
-                  align: 'center'
+                  align: 'center',
+                  wrap: true
                 }
               ]
             }
@@ -276,7 +283,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Instructions_5.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_05.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -287,10 +294,35 @@ async function handleEvent(event) {
               contents: [
                 {
                   type: 'text',
-                  text: '遊戲說明Game Instructions',
+                  text: '其他功能Other Features',
                   weight: 'bold',
                   size: 'md',
-                  align: 'center'
+                  align: 'center',
+                  wrap: true
+                }
+              ]
+            }
+          },
+          {
+            type: 'bubble',
+            hero: {
+              type: 'image',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_06.png',
+              size: 'full',
+              aspectRatio: '9:16',
+              aspectMode: 'cover'
+            },
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'text',
+                  text: '其他功能Other Features',
+                  weight: 'bold',
+                  size: 'md',
+                  align: 'center',
+                  wrap: true
                 }
               ]
             }
@@ -322,7 +354,7 @@ async function handleEvent(event) {
   if (userMessage === '遊戲說明') {
     return client.replyMessage(event.replyToken, {
       type: 'flex',
-      altText: '遊戲說明Game Instructions',
+      altText: '遊戲說明Game Instruction',
       contents: {
         type: 'carousel',
         contents: [
@@ -330,10 +362,14 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Instructions_1.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_01.png',
               size: 'full',
               aspectRatio: '9:16',
-              aspectMode: 'cover'
+              aspectMode: 'cover',
+              action: {
+                type: 'message',
+                text: '遊戲開始'
+              }
             },
             body: {
               type: 'box',
@@ -341,7 +377,7 @@ async function handleEvent(event) {
               contents: [
                 {
                   type: 'text',
-                  text: '遊戲說明Game Instructions',
+                  text: '遊戲說明Game Instruction',
                   weight: 'bold',
                   size: 'md',
                   align: 'center'
@@ -353,7 +389,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Instructions_2.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_02.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -364,10 +400,11 @@ async function handleEvent(event) {
               contents: [
                 {
                   type: 'text',
-                  text: '遊戲說明Game Instructions',
+                  text: '遊戲介面Game Interface',
                   weight: 'bold',
                   size: 'md',
-                  align: 'center'
+                  align: 'center',
+                  wrap: true
                 }
               ]
             }
@@ -376,7 +413,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Instructions_3.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_03.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -387,10 +424,11 @@ async function handleEvent(event) {
               contents: [
                 {
                   type: 'text',
-                  text: '遊戲說明Game Instructions',
+                  text: '遊戲方式How to Play',
                   weight: 'bold',
                   size: 'md',
-                  align: 'center'
+                  align: 'center',
+                  wrap: true
                 }
               ]
             }
@@ -399,7 +437,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Instructions_4.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_04.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -410,10 +448,11 @@ async function handleEvent(event) {
               contents: [
                 {
                   type: 'text',
-                  text: '遊戲說明Game Instructions',
+                  text: '遊戲方式How to Play',
                   weight: 'bold',
                   size: 'md',
-                  align: 'center'
+                  align: 'center',
+                  wrap: true
                 }
               ]
             }
@@ -422,7 +461,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/Instructions_5.png',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_05.png',
               size: 'full',
               aspectRatio: '9:16',
               aspectMode: 'cover'
@@ -433,10 +472,35 @@ async function handleEvent(event) {
               contents: [
                 {
                   type: 'text',
-                  text: '遊戲說明Game Instructions',
+                  text: '其他功能Other Features',
                   weight: 'bold',
                   size: 'md',
-                  align: 'center'
+                  align: 'center',
+                  wrap: true
+                }
+              ]
+            }
+          },
+          {
+            type: 'bubble',
+            hero: {
+              type: 'image',
+              url: 'https://olis.kmu.edu.tw/images/game/Instructions_06.png',
+              size: 'full',
+              aspectRatio: '9:16',
+              aspectMode: 'cover'
+            },
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'text',
+                  text: '其他功能Other Features',
+                  weight: 'bold',
+                  size: 'md',
+                  align: 'center',
+                  wrap: true
                 }
               ]
             }
