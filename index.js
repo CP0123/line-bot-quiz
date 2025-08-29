@@ -685,6 +685,64 @@ async function handleEvent(event) {
       .select('question_code')
       .eq('line_id', userId)
       .eq('is_correct', true);
+    
+    // 查詢使用者分數
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select()
+      .eq('line_id', userId);
+
+    const currentScore = userData?.[0]?.score ?? 0;
+
+    // 如果分數為 0，顯示 Feedback Bubble
+    if (currentScore === 0) {
+      return client.replyMessage(event.replyToken, {
+        type: 'flex',
+        altText: '遊玩回饋 Feedback',
+        contents: {
+          type: 'bubble',
+          hero: {
+            type: 'image',
+            url: 'https://olis.kmu.edu.tw/images/game/Achievement_unlocked.png',
+            size: 'full',
+            aspectRatio: '16:9',
+            aspectMode: 'cover'
+          },
+          body: {
+            type: 'box',
+            layout: 'vertical',
+            spacing: 'md',
+            contents: [
+              {
+                type: 'text',
+                text: \"遊戲達人就是你！\\n You're the Game Master!\",
+                size: 'md',
+                weight: 'bold',
+                color: '#666666',
+                align: 'center',
+                wrap: true
+              }
+            ]
+          },
+          footer: {
+            type: 'box',
+            layout: 'vertical',
+            contents: [
+              {
+                type: 'button',
+                action: {
+                  type: 'uri',
+                  label: '遊玩回饋 Feedback',
+                  uri: 'https://nc.kmu.edu.tw/index.php/apps/forms/s/dNaRWwcXDNTjLRfwgEz5Kama'
+                },
+                style: 'primary',
+                color: '#778dc7'
+              }
+            ]
+          }
+        }
+      });
+    }
 
     const completedCodes = answered?.map(a => a.question_code) ?? [];
     const remainingCodes = allCodes.filter(code => !completedCodes.includes(code));
