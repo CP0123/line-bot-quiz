@@ -657,91 +657,92 @@ async function handleEvent(event) {
 
     const completedCodes = answered?.map(a => a.question_code.toUpperCase()) ?? [];
     const remainingCodes = allCodes.filter(code => !completedCodes.includes(code));
+    const passCodesCount = 9;
 
-    if (remainingCodes.length === 0) {
+    if (remainingCodes.length === 0 || completedCodes >= passCodesCount) {
       const { data: userData, error: userError } = await supabase
       .from('users')
       .select()
       .eq('line_id', userId);
 
-    //console.log('📦 使用者資料:', userData);
+      //console.log('📦 使用者資料:', userData);
 
-    if (userError || !userData || userData.length === 0) {
-      return client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: '⚠️ 尚未找到你的遊戲紀錄，請先答題後再試！\nYour game record has not been found yet.\nPlease answer the questions first and try again!'
-      });
-    }
+      if (userError || !userData || userData.length === 0) {
+        return client.replyMessage(event.replyToken, {
+          type: 'text',
+          text: '⚠️ 尚未找到你的遊戲紀錄，請先答題後再試！\nYour game record has not been found yet.\nPlease answer the questions first and try again!'
+        });
+      }
 
-    const score = userData?.[0]?.score ?? 0;
+      const score = userData?.[0]?.score ?? 0;
 
-    const { data: answerData, error: answerError } = await supabase
-      .from('answers')
-      .select()
-      .eq('line_id', userId);
+      const { data: answerData, error: answerError } = await supabase
+        .from('answers')
+        .select()
+        .eq('line_id', userId);
 
-    //console.log('📋 使用者答題紀錄:', answerData);
+      //console.log('📋 使用者答題紀錄:', answerData);
 
-    const correctAnswers = answerData?.filter(a => a.is_correct)?.length ?? 0;
+      const correctAnswers = answerData?.filter(a => a.is_correct)?.length ?? 0;
 
       
-    return client.replyMessage(event.replyToken, [
-      {
-        type: 'text',
-        text: "🎉 你已完成所有題目！\nYou've completed all the questions!"
-      },
-      {
-        type: 'flex',
-        altText: '遊戲紀錄 Game Record',
-        contents: {
-          type: 'bubble',
-          body: {
-            type: 'box',
-            layout: 'vertical',
-            spacing: 'md',
-            contents: [
-              {
-                type: 'text',
-                text: '🎮 遊戲紀錄 Game Record',
-                weight: 'bold',
-                size: 'lg'
-              },
-              {
-                type: 'text',
-                text: `✅ 答對題數 Number of Questions Completed：${correctAnswers}`,
-                wrap: true
-              },
-              {
-                type: 'text',
-                text: `🏆 當前得分 Current score：${score}`,
-                wrap: true
-              }
-            ]
-          },
-          footer: {
-            type: 'box',
-            layout: 'vertical',
-            contents: [
-              {
-                type: 'button',
-                style: 'primary',
-                action: {
-                  type: 'message',
-                  label: '來去抽卡 Go to Drawing Card',
-                  text: '抽卡'
+      return client.replyMessage(event.replyToken, [
+        {
+          type: 'text',
+          text: "🎉 你已完成所有題目！\nYou've completed all the questions!"
+        },
+        {
+          type: 'flex',
+          altText: '遊戲紀錄 Game Record',
+          contents: {
+            type: 'bubble',
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              spacing: 'md',
+              contents: [
+                {
+                  type: 'text',
+                  text: '🎮 遊戲紀錄 Game Record',
+                  weight: 'bold',
+                  size: 'lg'
+                },
+                {
+                  type: 'text',
+                  text: `✅ 答對題數 Number of Questions Completed：${correctAnswers}`,
+                  wrap: true
+                },
+                {
+                  type: 'text',
+                  text: `🏆 當前得分 Current score：${score}`,
+                  wrap: true
                 }
-              }
-            ]
+              ]
+            },
+            footer: {
+              type: 'box',
+              layout: 'vertical',
+              contents: [
+                {
+                  type: 'button',
+                  style: 'primary',
+                  action: {
+                    type: 'message',
+                    label: '來去抽卡 Go to Drawing Card',
+                    text: '抽卡'
+                  }
+                }
+              ]
+            }
           }
         }
-      }
-    ]);  
+      ]);  
 
         
-    delete userState[userId];
+      delete userState[userId];
     
           
-      }
+    }
     
     const randomCode = remainingCodes[Math.floor(Math.random() * remainingCodes.length)];
     userState[userId] = { lastQuestionCode: randomCode };
