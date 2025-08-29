@@ -715,7 +715,7 @@ async function handleEvent(event) {
             contents: [
               {
                 type: 'text',
-                text: \"遊戲達人就是你！\\n You're the Game Master!\",
+                text: "遊戲達人就是你！\\n You're the Game Master!",
                 size: 'md',
                 weight: 'bold',
                 color: '#666666',
