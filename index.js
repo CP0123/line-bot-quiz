@@ -618,69 +618,31 @@ async function handleEvent(event) {
   const QUESTIONS_PER_PAGE = 12;
 
   if (userMessage === '遊戲開始' || userMessage === '繼續遊玩') {
-    userState[userId] = { questionOffset: 0 }; // 初始化偏移量
-  }
-  
-  if (userMessage === '遊戲開始' || userMessage === '繼續遊玩' || userMessage === '更多題目') {
-    try {
-      const { data: questions, error: qError } = await supabase
-        .from('questions')
-        .select();
-  
-      if (qError || !questions || questions.length === 0) {
-        console.error('❌ 題目查詢失敗:', qError?.message);
-        return client.replyMessage(event.replyToken, {
-          type: 'text',
-          text: '⚠️ 無法載入題目，請稍後再試！'
-        });
-      }
-  
-      const allCodes = questions
-        .map(q => q.code)
-        .sort((a, b) => {
-          const numA = parseInt(a.replace('Q', ''), 10);
-          const numB = parseInt(b.replace('Q', ''), 10);
-          return numA - numB;
-        });
-  
-      const { data: answered, error: aError } = await supabase
-        .from('answers')
-        .select('question_code')
-        .eq('line_id', userId)
-        .eq('is_correct', true);
-  
-      const completedCodes = answered?.map(a => a.question_code) ?? [];
-      const remainingCodes = allCodes.filter(code => !completedCodes.includes(code));
-  
-      if (remainingCodes.length === 0) {
-      const { data: userData, error: userError } = await supabase
-      .from('users')
-      .select()
-      .eq('line_id', userId);
+  try {
+    const { data: questions, error: qError } = await supabase
+      .from('questions')
+      .select();
 
-    //console.log('📦 使用者資料:', userData);
-
-    if (userError || !userData || userData.length === 0) {
+    if (qError || !questions || questions.length === 0) {
       return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: '⚠️ 尚未找到你的遊戲紀錄，請先答題後再試！\nYour game record has not been found yet.\nPlease answer the questions first and try again!'
+        text: '⚠️ 無法載入題目，請稍後再試！'
       });
     }
 
-    const score = userData?.[0]?.score ?? 0;
+    const allCodes = questions.map(q => q.code.toUpperCase());
 
-    const { data: answerData, error: answerError } = await supabase
+    const { data: answered, error: aError } = await supabase
       .from('answers')
-      .select()
-      .eq('line_id', userId);
+      .select('question_code')
+      .eq('line_id', userId)
+      .eq('is_correct', true);
 
-    //console.log('📋 使用者答題紀錄:', answerData);
+    const completedCodes = answered?.map(a => a.question_code.toUpperCase()) ?? [];
+    const remainingCodes = allCodes.filter(code => !completedCodes.includes(code));
 
-    const correctAnswers = answerData?.filter(a => a.is_correct)?.length ?? 0;
-
-      
-    return client.replyMessage(event.replyToken, [
-      {
+    if (remainingCodes.length === 0) {
+      return client.replyMessage(event.replyToken, {
         type: 'text',
         text: "🎉 你已完成所有題目！\nYou've completed all the questions!"
       },
@@ -729,58 +691,119 @@ async function handleEvent(event) {
           }
         }
       }
-    ]);  
+    );
+    }
 
-        
-    delete userState[userId];
-    
-          
+    const randomCode = remainingCodes[Math.floor(Math.random() * remainingCodes.length)];
+    userState[userId] = { lastQuestionCode: randomCode };
+
+    const { data: questionData, error: questionError } = await supabase
+      .from('questions')
+      .select()
+      .eq('code', randomCode);
+
+    if (questionError || !questionData || questionData.length === 0) {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: '找不到對應的題目 No matching question found. 😢'
+      });
+    }
+
+    const question = questionData[0];
+    const options = JSON.parse(question.options);
+
+    const quickReplyItems = options.map(opt => ({
+      type: 'action',
+      action: {
+        type: 'message',
+        label: opt,
+        text: opt
       }
-  
-      // 取得目前偏移量
-      const offset = userState[userId]?.questionOffset ?? 0;
-      const nextBatch = remainingCodes.slice(offset, offset + QUESTIONS_PER_PAGE);
-  
-      // 更新偏移量
-      userState[userId].questionOffset = offset + QUESTIONS_PER_PAGE;
-  
-      const quickReplyItems = nextBatch.map(code => ({
+    }));
+
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: `📖 題目（${question.code}）：${question.text}`,
+      quickReply: {
+        items: quickReplyItems
+      }
+    });
+
+  } catch (err) {
+    console.error('❌ 發生例外錯誤:', err.message);
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: '🚫 發生錯誤，請稍後再試！'
+    });
+  }
+}
+
+if (userMessage === '更多題目') {
+  userState[userId] = userState[userId] || { questionOffset: 0 };
+
+  try {
+    const { data: questions, error: qError } = await supabase
+      .from('questions')
+      .select();
+
+    if (qError || !questions || questions.length === 0) {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: '⚠️ 無法載入題目，請稍後再試！'
+      });
+    }
+
+    const allCodes = questions.map(q => q.code.toUpperCase());
+
+    const { data: answered, error: aError } = await supabase
+      .from('answers')
+      .select('question_code')
+      .eq('line_id', userId)
+      .eq('is_correct', true);
+
+    const completedCodes = answered?.map(a => a.question_code.toUpperCase()) ?? [];
+    const remainingCodes = allCodes.filter(code => !completedCodes.includes(code));
+
+    const offset = userState[userId].questionOffset ?? 0;
+    const nextBatch = remainingCodes.slice(offset, offset + QUESTIONS_PER_PAGE);
+    userState[userId].questionOffset = offset + QUESTIONS_PER_PAGE;
+
+    const quickReplyItems = nextBatch.map(code => ({
+      type: 'action',
+      action: {
+        type: 'message',
+        label: code,
+        text: code
+      }
+    }));
+
+    if (offset + QUESTIONS_PER_PAGE < remainingCodes.length) {
+      quickReplyItems.push({
         type: 'action',
         action: {
           type: 'message',
-          label: code,
-          text: code
+          label: '更多題目 More questions',
+          text: '更多題目'
         }
-      }));
-  
-      // 如果還有更多題目，加入「更多題目」選項
-      if (offset + QUESTIONS_PER_PAGE < remainingCodes.length) {
-        quickReplyItems.push({
-          type: 'action',
-          action: {
-            type: 'message',
-            label: '更多題目 More questions',
-            text: '更多題目'
-          }
-        });
-      }
-  
-      return client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: '請選擇要挑戰的題目代碼：\nPlease select the task code you wish to attempt:',
-        quickReply: {
-          items: quickReplyItems
-        }
-      });
-  
-    } catch (err) {
-      console.error('❌ 發生例外錯誤:', err.message);
-      return client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: '🚫 發生錯誤，請稍後再試！'
       });
     }
+
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: '請選擇要挑戰的題目代碼：\nPlease select the task code you wish to attempt:',
+      quickReply: {
+        items: quickReplyItems
+      }
+    });
+
+  } catch (err) {
+    console.error('❌ 發生例外錯誤:', err.message);
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: '🚫 發生錯誤，請稍後再試！'
+    });
   }
+}
     
   // 🟡 查詢遊戲紀錄區塊（放最前面）
   
