@@ -1181,8 +1181,49 @@ const flexItems = allCards.map(card => {
       userState[userId] = { nextQuestionCode: nextCode };
 
       return client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: `✅ 答對了！下一題已準備好，請輸入「繼續遊玩」以繼續答題。`
+        type: 'flex',
+        altText: '回答結果',
+        contents: {
+          type: 'bubble',
+          hero: {
+            type: 'image',
+            url: explain_image,
+            size: 'full',
+            aspectRatio: '1:1',
+            aspectMode: 'cover'
+          },
+          body: {
+            type: 'box',
+            layout: 'vertical',
+            contents: [
+              {
+                type: 'text',
+                text: explain_text,
+                weight: 'bold',
+                size: 'sm',
+                align: 'center',
+                wrap: true
+              }
+            ]
+          },
+          footer: {
+            type: 'box',
+            layout: 'vertical',
+            spacing: 'sm',
+            contents: [
+              {
+                type: 'button',
+                style: 'primary',
+                action: {
+                  type: 'message',
+                  label: '繼續遊玩 Continue playing',
+                  text: '繼續遊玩'
+                },
+                color: '#7D6AFF'
+              }
+            ]
+          }
+        }
       });
     } else {
       const options = JSON.parse(question.options);
