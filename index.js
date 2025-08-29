@@ -54,6 +54,15 @@ function buildCardBubble(card) {
               style: 'primary',
               action: {
                 type: 'message',
+                label: '繼續抽卡 Keep Drawing Card',
+                text: '抽卡'
+              }
+            },
+            {
+              type: 'button',
+              style: 'primary',
+              action: {
+                type: 'message',
                 label: '查看集卡冊 View the Card Album',
                 text: '集卡冊'
               }
