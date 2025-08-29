@@ -54,7 +54,7 @@ function buildCardBubble(card) {
               style: 'primary',
               action: {
                 type: 'message',
-                label: '集卡冊',
+                label: '查看集卡冊 View the Card Album',
                 text: '集卡冊'
               }
             }
@@ -608,7 +608,7 @@ async function handleEvent(event) {
           type: 'action',
           action: {
             type: 'message',
-            label: '更多題目',
+            label: '更多題目 More questions',
             text: '更多題目'
           }
         });
@@ -616,7 +616,7 @@ async function handleEvent(event) {
   
       return client.replyMessage(event.replyToken, {
         type: 'text',
-        text: '請選擇要挑戰的題目代碼：',
+        text: '請選擇要挑戰的題目代碼：\nPlease select the task code you wish to attempt:',
         quickReply: {
           items: quickReplyItems
         }
