@@ -310,7 +310,7 @@ async function handleEvent(event) {
   const upperMessage = userMessage.toUpperCase();
   
   //輸入關鍵字清除答題狀態
-  if (userMessage === '抽卡' || userMessage === '集卡冊' || userMessage === '您尚未獲得此卡片You have not yet obtained this card.' || userMessage === '獎勵兌換' || userMessage === '遊戲紀錄'|| userMessage === '遊戲說明'||userMessage === '圖書館資訊' || userMessage === '遊戲開始' || userMessage === '繼續遊玩') {
+  if (userMessage === '抽卡' || userMessage === '集卡冊' || userMessage === '您尚未獲得此卡片You have not yet obtained this card.' || userMessage === '獎勵兌換' || userMessage === '遊戲紀錄'|| userMessage === '遊戲說明'||userMessage === '圖書館社群' || userMessage === '遊戲開始' || userMessage === '繼續遊玩') {
     delete userState[userId];
   }
 
@@ -446,10 +446,10 @@ async function handleEvent(event) {
     });
   }
 
-  if (userMessage === '圖書館資訊') {
+  if (userMessage === '圖書館社群') {
     return client.replyMessage(event.replyToken, {
       type: 'flex',
-      altText: '遊戲說明Game Instructions',
+      altText: "圖書館社群Library's social media platform",
       contents: {
         type: 'carousel',
         contents: [
@@ -457,7 +457,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/寶箱.png',
+              url: 'https://olis.kmu.edu.tw/images/game/LINE.png',
               size: 'full',
               aspectRatio: '1:1',
               aspectMode: 'cover'
@@ -499,7 +499,7 @@ async function handleEvent(event) {
             type: 'bubble',
             hero: {
               type: 'image',
-              url: 'https://olis.kmu.edu.tw/images/game/寶箱.png',
+              url: 'https://olis.kmu.edu.tw/images/game/IG.png',
               size: 'full',
               aspectRatio: '1:1',
               aspectMode: 'cover'
@@ -529,7 +529,7 @@ async function handleEvent(event) {
                   action: {
                     type: 'uri',
                     label: '追蹤 Follow',
-                    uri: 'https://line.me/R/ti/p/%40ayr1866v'
+                    uri: 'https://www.instagram.com/kmulibrary/'
                   },
                   style: 'primary',
                   color: '#778dc7'
